@@ -12,5 +12,6 @@ INCLUDE "source/system/banks.asm"
 INCLUDE "source/system/call.asm"
 INCLUDE "source/system/dma.asm"
 INCLUDE "source/system/math.asm"
+; TODO add the rest here
 
 INCLUDE "source/game/main.asm"
