@@ -11,7 +11,7 @@ wOAM_PreviousCursor:
     ; Previous spot in OAM
     ds 1
 
-SECTION "OAM", ROM0
+SECTION "OAMX", ROMX
 OAM_Init::
     call OAM_ResetShadow
     ret
@@ -22,7 +22,7 @@ OAM_ResetShadow::
 
     ld hl, wOAM_Shadow
     ld de, 4
-    ld b, wOAM_Shadow.End - wOAM_Shadow
+    ld b, (wOAM_Shadow.End - wOAM_Shadow)/4
     ld a, $FF
     .Loop:
         ld [hl], a
@@ -31,6 +31,7 @@ OAM_ResetShadow::
         jr nz, .Loop
     ret
 
+SECTION "OAM", ROM0
 OAM_PrepareNewFrame::
     Crash
     ; Frame_Ready

@@ -11,14 +11,25 @@ LCD_Off::
     ret z
 
     ; Disable all interrupts
-    xor a
-    ld [rIF], a
-    ld [rIE], a
+    Interrupt_Disable
 
     ; Mark LCD as Off
     xor a
     ld [wLCD_IsOn], a
     Crash
+
+    ; Await VBlank manually since no interrupts
+    .WaitLoop:
+        ld a, [rLY]
+        cp 144
+        jr nz, .WaitLoop
+
+    xor a
+    ld [rLCDC], a
+
+    XCall Interrupt_SetTimer
+
+    ret
 
 LCD_On::
     Set8 wLCD_IsOn, 1

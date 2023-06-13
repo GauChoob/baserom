@@ -2,6 +2,10 @@ MACRO Crash
     db $D3 ; Invalid opcode
 ENDM
 
+MACRO BankAddress
+    db BANK(\1)
+    dw \1
+ENDM
 
 MACRO NegativeA
     cpl

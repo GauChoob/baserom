@@ -1,16 +1,3 @@
-SECTION "WRAM Banks", WRAM0
-
-wBanks_rSVBK::
-    ds 1
-wBanks_ROMB0::
-    ds 1
-
-SECTION "Banks", ROMX
-Banks_Init::
-    SwitchROMBank 1
-    SwitchRAMBank 0
-    ret
-
 MACRO SwitchRAMBank
     ; \1 = bank
     ld a, \1
@@ -50,3 +37,18 @@ MACRO PopROMBank
     ld [wBanks_ROMB0], a
     ld [rROMB0], a
 ENDM
+
+
+SECTION "WRAM Banks", WRAM0
+
+wBanks_rSVBK::
+    ds 1
+wBanks_ROMB0::
+    ds 1
+
+
+SECTION "Banks", ROM0
+Banks_Init::
+    SwitchROMBank 1
+    SwitchRAMBank 0
+    ret

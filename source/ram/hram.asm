@@ -1,3 +1,0 @@
-
-
-SECTION "HRAM", HRAM

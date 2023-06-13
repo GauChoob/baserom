@@ -29,8 +29,7 @@ Interrupt_VBlank::
 
 SECTION "Interrupt_HBlank", ROM0[$0048]
 Interrupt_HBlank::
-    Crash
-    reti
+    jp Timer_Interrupt
 
 SECTION "Interrupt_Timer", ROM0[$0050]
 Interrupt_Timer::
