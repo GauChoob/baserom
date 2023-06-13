@@ -14,12 +14,18 @@ DEF VBLANK_FUNC_KEY EQU 1
 DEF VBLANK_AWAIT_MASK EQU %10000000
 DEF VBLANK_AWAIT_KEY EQU 7
 hVBlank_Requests::
-    ds 1
+    db
 hVBlank_Bank::
-    ds 1
+    db
 hVBlank_Func::
-    ds 2
+    dw
 
+hVBlank_Source::
+    dw
+hVBlank_Dest::
+    dw
+hVBlank_VBK::
+    db
 SECTION "InterruptX", ROMX
 Interrupt_Init::
     di
@@ -29,7 +35,7 @@ Interrupt_Init::
     ld [rIF], a
     ld [rIE], a
 
-    Set16 hVBlank_Func, VBlank_FuncNull
+    Set16 hVBlank_Func, VBlank_Func_Null
     ret
 
 Interrupt_SetTimer::
@@ -67,17 +73,43 @@ VBlank_Await::
         jr nz, .Wait
         ret
 
-VBlank_FuncNull:
+VBlank_Func_Null:
+    ret
+
+VBlank_Func_CopyTile::
+    ; Copy $10 bytes from hVBlank_Source to hVBlank_Dest
+    ; Arguments:
+    ;   wVBlank_SourceAddress
+    ;   hVBlank_VBK
+    ;   hVBlank_Dest
+    Get16 hl, hVBlank_Source
+    Get16 bc, hVBlank_Dest
+    Mov8 rVBK, hVBlank_VBK
+    REPT $10
+        LdBCIHLI
+    ENDR
+    Set16 hVBlank_Func, VBlank_Func_Null
+    ret
+
+VBlank_Func_Copy2Tile::
+    ; Copy $20 bytes from hVBlank_Source to hVBlank_Dest
+    ; Arguments:
+    ;   hVBlank_Source
+    ;   hVBlank_VBK
+    ;   hVBlank_Dest
+    Get16 hl, hVBlank_Source
+    Get16 bc, hVBlank_Dest
+    Mov8 rVBK, hVBlank_VBK
+    REPT $20
+        LdBCIHLI
+    ENDR
+    Set16 hVBlank_Func, VBlank_Func_Null
     ret
 
 VBlank_Interrupt::
     SaveRegisters
     PushRAMBank
     PushROMBank
-
-    ld a, [hVBlank_Requests]
-    bit VBLANK_DMA_KEY, a
-    call nz, hDMA_Transfer
 
     ld a, [hVBlank_Requests]
     bit VBLANK_FUNC_KEY, a
@@ -87,6 +119,12 @@ VBlank_Interrupt::
         DerefHL
         call CallHL
     .SkipFunc:
+
+    ld a, [hVBlank_Requests]
+    bit VBLANK_DMA_KEY, a
+    jr z, .SkipDMA
+        call hDMA_Transfer
+    .SkipDMA:
 
     XCall Joypad_Update
 

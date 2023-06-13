@@ -43,14 +43,14 @@ def fix_MmWw(img):
 
 
 # Loop through the characters needed and save to desired location
-for character in desired_characters:
+for id, character in enumerate(desired_characters):
     
     # Get text size of character
     left, top, right, bottom = font.getbbox(character)
     width = right - left
     
     # Save the data
-    chardatum = CharData(ord(character), width, character)
+    chardatum = CharData(id, width, character)
     data[chardatum.id] = (chardatum)
 
     # Create PNG Image with that size

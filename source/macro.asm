@@ -182,3 +182,25 @@ MACRO SaveRegisters
 ENDM
 
 
+MACRO JumpSmaller
+    cp \1
+    jr c, \2
+ENDM
+
+MACRO JumpBiggerEq
+    cp \1
+    jr nc, \2
+ENDM
+
+; MACRO JumpSmallerEq
+;     cp \1
+;     jr z, \2
+;     jr c, \2
+; ENDM
+
+; MACRO JumpBigger
+;     cp \1
+;     jr z, :+
+;     jr nc, \2
+;     :
+; ENDM

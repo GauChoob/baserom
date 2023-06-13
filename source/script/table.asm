@@ -16,3 +16,5 @@ Script_Table::
     Script_AddCommand Cmd_JumpTable
     ; unpack.asm
     Script_AddCommand Cmd_Palette
+    ; text.asm
+    Script_AddCommand Cmd_Write

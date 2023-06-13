@@ -59,7 +59,7 @@ Palette_VBlank_Background::
         ld a, [hl+]
         ld [$FF00+c], a
     ENDR
-    Set16 hVBlank_Func, VBlank_FuncNull
+    Set16 hVBlank_Func, VBlank_Func_Null
     ret
 
 Palette_VBlank_Sprite::
@@ -70,7 +70,7 @@ Palette_VBlank_Sprite::
         ld a, [hl+]
         ld [$FF00+c], a
     ENDR
-    Set16 hVBlank_Func, VBlank_FuncNull
+    Set16 hVBlank_Func, VBlank_Func_Null
     ret
 
 Palette_VBlank_Both::

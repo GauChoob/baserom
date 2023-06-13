@@ -10,14 +10,15 @@ Boot::
 Reset::
     Stack_Init
     call System_Init
+    XCall Text_Init
     XCall Script_Init
     XCall Interrupt_SetVBlank
     jp Game_Init
 
 Game_Init::
     ld hl, wScript_Main
-    ld c, BANK(SCRIPT_Pal1)
-    ld de, SCRIPT_Pal1
+    ld c, BANK(SCRIPT_Text)
+    ld de, SCRIPT_Text
     XCall Script_Set
 
     jp Game_Loop

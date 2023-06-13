@@ -4,7 +4,7 @@ SCRIPT_None::
     End
 
 SCRIPT_Test1::
-    JumpTable Evaluation_RandBool, SCRIPT_Pal1, SCRIPT_Pal2
+    JumpTable Evaluation_RandBool, SCRIPT_Pal1, SCRIPT_Text
     End
 
 
@@ -13,5 +13,6 @@ SCRIPT_Pal1::
     Palette TestSprite, 64, PALETTE_UNPACK_SHADOW_MASK | PALETTE_UNPACK_TARGET_MASK
     End
 
-SCRIPT_Pal2::
+SCRIPT_Text::
+    Write "Well Hello!"
     End
