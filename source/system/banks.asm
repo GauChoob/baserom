@@ -1,13 +1,17 @@
 MACRO SwitchRAMBank
     ; \1 = bank
-    ld a, \1
+    IF STRCMP("\1", "a") != 0
+        ld a, \1
+    ENDC
     ld [wBanks_rSVBK], a
     ld [rSVBK], a
 ENDM
 
 MACRO SwitchROMBank
     ; \1 = bank
-    ld a, \1
+    IF STRCMP("\1", "a") != 0
+        ld a, \1
+    ENDC
     ld [wBanks_ROMB0], a
     ld [rROMB0], a
 ENDM
@@ -32,7 +36,7 @@ MACRO PopRAMBank
 ENDM
 
 MACRO PopROMBank
-    ; Pops ROM bank from stack and loads said RAM bank
+    ; Pops ROM bank from stack and loads said ROM bank
     pop af
     ld [wBanks_ROMB0], a
     ld [rROMB0], a

@@ -9,3 +9,16 @@ Mem_Copy::
         LdHLIBCI
         Dec16Loop de, .Loop
     ret
+
+
+Mem_Set::
+    ; Inputs:
+    ;   b = byte
+    ;   hl = destination
+    ;   de = size
+    ld a, b
+    .Loop:
+        ld a, b
+        ld [hl+], a
+        Dec16Loop de, .Loop
+    ret

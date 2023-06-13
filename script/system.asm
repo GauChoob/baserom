@@ -1,10 +1,17 @@
 SECTION "SCRIPT_SYSTEM", ROMX
 
 SCRIPT_None::
-    Wait 5
-    Jump SCRIPT_Test
     End
 
-SCRIPT_Test::
-    Wait 5
-    Jump SCRIPT_None
+SCRIPT_Test1::
+    JumpTable Evaluation_RandBool, SCRIPT_Pal1, SCRIPT_Pal2
+    End
+
+
+SCRIPT_Pal1::
+    Palette TestSprite, 0, PALETTE_UNPACK_SHADOW_MASK | PALETTE_UNPACK_TARGET_MASK
+    Palette TestSprite, 64, PALETTE_UNPACK_SHADOW_MASK | PALETTE_UNPACK_TARGET_MASK
+    End
+
+SCRIPT_Pal2::
+    End

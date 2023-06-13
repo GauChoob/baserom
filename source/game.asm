@@ -6,9 +6,13 @@ INCLUDE "source/rom/header.asm"
 
 INCLUDE "source/system/_system.asm"
 INCLUDE "source/script/_script.asm"
+INCLUDE "source/text/_text.asm"
 
 
 INCLUDE "source/game/main.asm"
 
 
 INCLUDE "script/system.asm"
+
+
+INCLUDE "assets/assets.asm"

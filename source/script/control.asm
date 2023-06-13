@@ -1,3 +1,5 @@
+SECTION "Control", ROM0
+
 MACRO Wait
     db Enum_Cmd_Wait
     dw \1
@@ -52,6 +54,11 @@ Cmd_Jump::
 MACRO JumpTable
     db Enum_Cmd_JumpTable
     BankAddress \1
+    SHIFT
+    REPT _NARG
+        dw \1
+        SHIFT
+    ENDR
 ENDM
 Cmd_JumpTable::
     ; Arguments:
@@ -63,10 +70,13 @@ Cmd_JumpTable::
     Script_ReadWord hl
     call Call_Foreign
 
+    ld a, d
     add a
     ld l, a
     ld h, $00
     add hl, bc
+
+    DerefHL
 
     Set16 hScript_Current.Address, hl
     ld b, h

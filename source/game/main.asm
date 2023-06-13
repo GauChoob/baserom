@@ -1,4 +1,4 @@
-SECTION "Setup", ROM0
+SECTION "Main", ROM0
 
 Boot::
     ; Verify if running on GBC
@@ -9,25 +9,23 @@ Boot::
 
 Reset::
     Stack_Init
-    call Setup
-    XCall Interrupt_SetVBlank
-    jp GameLoop
-
-
-Setup::
-    Call Banks_Init
-    XCall Speed_Double
-    XCall DMA_Init
-    XCall OAM_Init
-    XCall Joypad_Init
-    XCall Interrupt_Init
+    call System_Init
     XCall Script_Init
-    ret
+    XCall Interrupt_SetVBlank
+    jp Game_Init
 
-GameLoop::
+Game_Init::
+    ld hl, wScript_Main
+    ld c, BANK(SCRIPT_Pal1)
+    ld de, SCRIPT_Pal1
+    XCall Script_Set
+
+    jp Game_Loop
+
+Game_Loop::
     ld hl, wScript_Main
     call Script_Do
     ; ld hl, wScript_Main
     ; call wScript_Secondary
     call VBlank_Await
-    jr GameLoop
+    jr Game_Loop

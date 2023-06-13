@@ -2,6 +2,12 @@ SECTION "WRAM LCD", WRAM0
 wLCD_IsOn::
     ds 1
 
+SECTION "LCDX", ROMX
+
+LCD_Init:
+    Set8 wLCD_IsOn, 1
+    ret
+
 SECTION "LCD", ROM0
 
 LCD_Off::

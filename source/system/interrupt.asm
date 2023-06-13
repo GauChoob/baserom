@@ -7,20 +7,29 @@ ENDM
 
 SECTION "HRAM VBLANK", HRAM
 
-DEF VBLANK_PALETTE_UPDATE_MASK EQU %00000001
-DEF VBLANK_PALETTE_UPDATE_KEY EQU 0
+DEF VBLANK_DMA_MASK EQU %00000001
+DEF VBLANK_DMA_KEY EQU 0
+DEF VBLANK_FUNC_MASK EQU %00000010
+DEF VBLANK_FUNC_KEY EQU 1
 DEF VBLANK_AWAIT_MASK EQU %10000000
 DEF VBLANK_AWAIT_KEY EQU 7
 hVBlank_Requests::
     ds 1
+hVBlank_Bank::
+    ds 1
+hVBlank_Func::
+    ds 2
 
 SECTION "InterruptX", ROMX
 Interrupt_Init::
     di
     xor a
+    ld [hVBlank_Bank], a
     ld [hVBlank_Requests], a
     ld [rIF], a
     ld [rIE], a
+
+    Set16 hVBlank_Func, VBlank_FuncNull
     ret
 
 Interrupt_SetTimer::
@@ -58,14 +67,26 @@ VBlank_Await::
         jr nz, .Wait
         ret
 
+VBlank_FuncNull:
+    ret
+
 VBlank_Interrupt::
     SaveRegisters
     PushRAMBank
     PushROMBank
-    
+
     ld a, [hVBlank_Requests]
-    bit VBLANK_PALETTE_UPDATE_KEY, a
-    call nz, Palette_VBlank_Both
+    bit VBLANK_DMA_KEY, a
+    call nz, hDMA_Transfer
+
+    ld a, [hVBlank_Requests]
+    bit VBLANK_FUNC_KEY, a
+    jr z, .SkipFunc
+        SwitchROMBank [hVBlank_Bank]
+        ld hl, hVBlank_Func
+        DerefHL
+        call CallHL
+    .SkipFunc:
 
     XCall Joypad_Update
 

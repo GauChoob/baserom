@@ -1,10 +1,5 @@
 SECTION "Call", ROM0
 
-MACRO ECallHL
-    ; Calls the address pointed to by hl
-    DerefHL
-    call CallHL
-ENDM
 CallHL::
     jp hl
 

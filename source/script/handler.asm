@@ -21,16 +21,16 @@ wScript_Main::
 wScript_Secondary::
     ScriptObject
 
-SECTION "SCRIPTX", ROMX
+SECTION "HandlerX", ROMX
 
 Script_Init::
     ld hl, wScript_Main
-    ld a, BANK(SCRIPT_None)
+    ld c, BANK(SCRIPT_None)
     ld de, SCRIPT_None
     call Script_Set
 
     ld hl, wScript_Secondary
-    ld a, BANK(SCRIPT_None)
+    ld c, BANK(SCRIPT_None)
     ld de, SCRIPT_None
     call Script_Set
 
@@ -39,11 +39,11 @@ Script_Init::
 Script_Set::
     ; Inputs:
     ;   hl = Script
-    ;   a = bank
+    ;   c = bank
     ;   de = address
     ; Destroys:
-    ;   ahl
-    ld [hl+], a
+    ;   chl
+    Set8 hl+, c
     Set8 hl+, e
     Set8 hl+, d
     xor a
@@ -71,7 +71,7 @@ Script_Close::
     ret
 
 
-SECTION "SCRIPT", ROM0
+SECTION "Handler", ROM0
 Script_Do::
     ; Inputs:
     ;   hl = Script
