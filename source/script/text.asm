@@ -20,7 +20,11 @@ Cmd_Write::
     ld l, a
     jr nz, .MainLoop
     .Init:
+        push hl
+        push bc
         Text_Setup 1, $9600
+        pop bc
+        pop hl
     .MainLoop
         ld h, $00
         add hl, bc

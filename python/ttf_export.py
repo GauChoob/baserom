@@ -74,9 +74,9 @@ def saveimg(img, width, height, name):
     pixels_flat = list(img.getdata())
     for i, pixel in enumerate(pixels_flat):
         if pixel == (0, 0, 0, 255):
-            pixels_flat[i] = 0
-        elif pixel == (0, 0, 0, 0,):
             pixels_flat[i] = 3
+        elif pixel == (0, 0, 0, 0,):
+            pixels_flat[i] = 0
         else:
             raise KeyError
     pixels = [pixels_flat[i * width:(i + 1) * width] for i in range(height)]

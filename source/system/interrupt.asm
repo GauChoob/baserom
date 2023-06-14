@@ -26,6 +26,9 @@ hVBlank_Dest::
     dw
 hVBlank_VBK::
     db
+hVBlank_TileCount::
+    db
+
 SECTION "InterruptX", ROMX
 Interrupt_Init::
     di
@@ -85,26 +88,16 @@ VBlank_Func_CopyTile::
     Get16 hl, hVBlank_Source
     Get16 bc, hVBlank_Dest
     Mov8 rVBK, hVBlank_VBK
-    REPT $10
-        LdBCIHLI
-    ENDR
+    Get8 d, hVBlank_TileCount
+    .Loop:
+        REPT $10
+            LdBCIHLI
+        ENDR
+        dec d
+        jr nz, .Loop
     Set16 hVBlank_Func, VBlank_Func_Null
     ret
 
-VBlank_Func_Copy2Tile::
-    ; Copy $20 bytes from hVBlank_Source to hVBlank_Dest
-    ; Arguments:
-    ;   hVBlank_Source
-    ;   hVBlank_VBK
-    ;   hVBlank_Dest
-    Get16 hl, hVBlank_Source
-    Get16 bc, hVBlank_Dest
-    Mov8 rVBK, hVBlank_VBK
-    REPT $20
-        LdBCIHLI
-    ENDR
-    Set16 hVBlank_Func, VBlank_Func_Null
-    ret
 
 VBlank_Interrupt::
     SaveRegisters

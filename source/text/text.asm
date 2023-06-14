@@ -1,10 +1,10 @@
 
 MACRO Text_Setup
+    ; \1 = VBK
+    ; \2 = Tileset destination
     Set8 hVBlank_VBK, \1
     Set16 wText_DestinationAddress, \2
-    xor a
-    ld [wText_CharWidth], a
-    ld [wText_DestinationOffset], a
+    CallForeign Text_ResetBuffer
 ENDM
 
 SECTION "WRAM TEXT", WRAM0
@@ -30,6 +30,18 @@ SECTION "TextX", ROMX, BANK[TEXT_BANK]
 Text_Init::
     Set16 wText_FontAddress, BITMAP_Charmap_Tall
     Set16 wText_WidthAddress, Charmap_Tall_Width
+    call Text_ResetBuffer
+    ret
+
+Text_ResetBuffer::
+    xor a
+    ld [wText_CharWidth], a
+    ld [wText_DestinationOffset], a
+
+    ld b, $00
+    ld de, $20
+    ld hl, wText_TilesetBuffer
+    call Mem_Set
     ret
 
 SECTION "TEXT", ROM0
@@ -57,16 +69,17 @@ Text_HandleCharacterRow::
         jr nz, .Loop
     .Skip:
 
-    ; Store the first byte twice
-    ld a, e
+    ; Store the first byte twice ("or" with previous data)
+    ld a, [bc]
+    or e
     ld [bc], a
     inc bc
     ld [bc], a
-    dec bc
+    inc bc ; +2
     push bc
 
-    ; Store the second byte twice
-    ld hl, $20
+    ; Store the second byte twice (overwrite old data)
+    ld hl, $20 - 2 ; -2
     add hl, bc
     ld a, d
     ld [hl+], a
@@ -102,6 +115,11 @@ Text_PrepareCharacter::
         ld bc, $20
         add hl, bc
         Set16 wText_DestinationAddress, hl
+        ; Shift the bytes in wText_TilesetBuffer
+        ld bc, wText_TilesetBuffer + $20
+        ld hl, wText_TilesetBuffer
+        ld de, $20
+        call Mem_Copy
     .SkipIncrement
 
     ; Get the width of the current char for the next cycle
@@ -143,8 +161,9 @@ Text_PrepareCharacter::
     or VBLANK_FUNC_MASK
     ld [hVBlank_Requests], a
     Mov16 hVBlank_Dest, wText_DestinationAddress
-    Mov16 hVBlank_Source, wText_TilesetBuffer
-    Set16 hVBlank_Func, VBlank_Func_Copy2Tile
+    Set16 hVBlank_Source, wText_TilesetBuffer
+    Set16 hVBlank_Func, VBlank_Func_CopyTile
+    Set8 hVBlank_TileCount, 4
 
     PopROMBank
     ret
