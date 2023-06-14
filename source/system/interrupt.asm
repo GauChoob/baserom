@@ -45,11 +45,12 @@ Interrupt_SetTimer::
     ; Activate the timer at the rate of 59.8 interrupts per second
     ; This approximately is the same as the refresh rate, reducing the sound glitches when the screen is temporarily disabled, as
     ; the real VBlank is disabled while the screen is off
-    Set8 rTMA, $89
-    Set8 rTAC, $04
+    Set8 rTMA, $77
+    Set8 rTAC, %100
 
     xor a
     ld [rIF], a
+    Set8 rTIMA, $77
     Set8 rIE, IEF_TIMER
     ei
     ret
@@ -61,7 +62,7 @@ Interrupt_SetVBlank::
     ei
     ret
 
-SECTION "Interrupt", ROM0
+SECTION "Interrupt", ROM0[$3000] ; TODO remove this hardcoded - easier for debugging as the breakpoint doesn't move
 
 VBlank_Await::
     ld a, [hVBlank_Requests]
@@ -131,5 +132,16 @@ VBlank_Interrupt::
     reti
 
 Timer_Interrupt::
-    ; TODO sound
+    SaveRegisters
+    PushRAMBank
+    PushROMBank
+
+    ; Sound stuff
+
+    XCall Joypad_Update
+
+    ei
+    PopROMBank
+    PopRAMBank
+    RestoreRegisters
     reti

@@ -3,7 +3,7 @@ MACRO SwitchRAMBank
     IF STRCMP("\1", "a") != 0
         ld a, \1
     ENDC
-    ld [wBanks_rSVBK], a
+    ld [wBanks_SVBK], a
     ld [rSVBK], a
 ENDM
 
@@ -18,7 +18,7 @@ ENDM
 
 MACRO PushRAMBank
     ; Pushes RAM bank onto stack
-    ld a, [wBanks_rSVBK]
+    ld a, [wBanks_SVBK]
     push af
 ENDM
 
@@ -31,7 +31,7 @@ ENDM
 MACRO PopRAMBank
     ; Pops RAM bank from stack and loads said RAM bank
     pop af
-    ld [wBanks_rSVBK], a
+    ld [wBanks_SVBK], a
     ld [rSVBK], a
 ENDM
 
@@ -45,7 +45,7 @@ ENDM
 
 SECTION "WRAM Banks", WRAM0
 
-wBanks_rSVBK::
+wBanks_SVBK::
     ds 1
 wBanks_ROMB0::
     ds 1

@@ -61,10 +61,8 @@ Text_HandleCharacterRow::
     or a
     jr z, .Skip
     .Loop:
-        rrc e
+        srl e
         rr d
-        rrc c
-        rr b
         dec a
         jr nz, .Loop
     .Skip:
