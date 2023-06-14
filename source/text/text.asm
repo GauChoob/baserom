@@ -28,8 +28,8 @@ wText_CharWidth::
 SECTION "TextX", ROMX, BANK[TEXT_BANK]
 
 Text_Init::
-    Set16 wText_FontAddress, wText_Font
-    Set16 wText_WidthAddress, Charmap_Width
+    Set16 wText_FontAddress, BITMAP_Charmap_Tall
+    Set16 wText_WidthAddress, Charmap_Tall_Width
     ret
 
 SECTION "TEXT", ROM0

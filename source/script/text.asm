@@ -3,7 +3,7 @@ SECTION "Text", ROM0
 MACRO Write
     db Enum_Cmd_Write
     db \1          ; Text
-    db Charmap_EOL
+    db "🛑"
 ENDM
 Cmd_Write::
     ; Write the text
@@ -26,7 +26,7 @@ Cmd_Write::
         add hl, bc
 
         ld a, [hl]
-        cp Charmap_EOL
+        cp "🛑"
         jr z, .EOL
         .Normal:
             call Text_PrepareCharacter
