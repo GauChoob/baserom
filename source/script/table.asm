@@ -14,7 +14,11 @@ Script_Table::
     Script_AddCommand Cmd_End
     Script_AddCommand Cmd_Jump
     Script_AddCommand Cmd_JumpTable
-    ; unpack.asm
-    Script_AddCommand Cmd_Palette
+    ; system.asm
+    Script_AddCommand Cmd_LCDOff
+    Script_AddCommand Cmd_LCDOn
     ; text.asm
     Script_AddCommand Cmd_Write
+    ; unpack.asm
+    Script_AddCommand Cmd_Palette
+    Script_AddCommand Cmd_StaticTilemap

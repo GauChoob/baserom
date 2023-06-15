@@ -1,15 +1,23 @@
+MACRO LCD_AssertOff
+    ld a, [wLCD_LCDC]
+    or a
+    jr z, .Pass\@
+        Crash
+    .Pass\@:
+ENDM
+
 SECTION "WRAM LCD", WRAM0
 wLCD_LCDC::
     ds 1
 
-SECTION "LCDX", ROMX
-
-LCD_Init::
-    call LCD_Off
-    call LCD_On
-    ret
 
 SECTION "LCD", ROM0
+
+LCD_Init::
+    ; Hide the window by default
+    Set8 rWY, 144
+    call LCD_Off
+    ret
 
 LCD_Off::
     ; Abort if LCD already off
@@ -46,8 +54,10 @@ LCD_On::
     xor a
     ld [hVBlank_Requests], a
 
-    XCall Interrupt_SetVBlank
+    ; Sync timing to avoid distortion in sound
+    call Timer_Await
 
+    XCall Interrupt_SetVBlank
     ; Turn on LCDC
     ld a, LCDCF_ON | LCDCF_WIN9C00 | LCDCF_WINON | LCDCF_BG8800 | LCDCF_BG9800 | LCDCF_OBJ16 | LCDCF_OBJON | LCDCF_BGON
     ld [rLCDC], a

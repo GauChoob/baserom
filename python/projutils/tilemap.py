@@ -13,7 +13,7 @@ class Tilemap(filecontents.FileContentsSerializer):
 
     def __init__(self):
         super().__init__()
-        self.map: list[int] = []
+        self.map: list[bytearray] = bytearray()
 
     @classmethod
     def init_from_rom(cls, sym: utils.SymFile, rom: utils.Rom, address: utils.BankAddress, compressed: bool, size: int | None) -> Self:

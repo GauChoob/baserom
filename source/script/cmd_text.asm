@@ -22,7 +22,7 @@ Cmd_Write::
     .Init:
         push hl
         push bc
-        Text_Setup 0, $8800
+        Text_Setup 1, $9100
         pop bc
         pop hl
     .MainLoop

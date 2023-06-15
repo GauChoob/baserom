@@ -2,4 +2,6 @@
 *.asm text
 
 # binary
-#*.png binary
+*.png binary
+*.tilemap binary
+*.attrmap binary

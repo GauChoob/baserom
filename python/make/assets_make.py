@@ -51,15 +51,15 @@ for folder in folders:
                 pal = color.Palette.init_from_original_file(relpath)
                 pal.save_processed_file(os.path.join(outfolder, os.path.splitext(relpath)[0]), True)
             # Include .pattern.tilemap (which also processes .pattern.attrmap) -> .pattern
-            elif(re.match(r"^.*\.pattern\.tilemap$", file)):
-                print("Pattern   "+relpath)
-                pat = pattern.Pattern.init_from_original_file(relpath)
-                pat.save_processed_file(os.path.join(outfolder, os.path.splitext(relpath)[0]))
-            # Include *.tilemap, (including collision.tilemap and metatile.tile)
-            elif(re.match(r"^.*\.tilemap$", file)):
-                print("Tilemap   "+relpath)
-                shutil.copyfile(relpath, os.path.join(outfolder, relpath))
-            # Include *.attrmap (also uselessly copies pattern.attrmap)
-            elif(re.match(r"^.*\.attrmap$", file)):
-                print("Attrmap   "+relpath)
-                shutil.copyfile(relpath, os.path.join(outfolder, relpath))
+            # elif(re.match(r"^.*\.pattern\.tilemap$", file)):
+            #     print("Pattern   "+relpath)
+            #     pat = pattern.Pattern.init_from_original_file(relpath)
+            #     pat.save_processed_file(os.path.join(outfolder, os.path.splitext(relpath)[0]))
+            # # Include *.tilemap, (including collision.tilemap and metatile.tile)
+            # elif(re.match(r"^.*\.tilemap$", file)):
+            #     print("Tilemap   "+relpath)
+            #     shutil.copyfile(relpath, os.path.join(outfolder, relpath))
+            # # Include *.attrmap (also uselessly copies pattern.attrmap)
+            # elif(re.match(r"^.*\.attrmap$", file)):
+            #     print("Attrmap   "+relpath)
+            #     shutil.copyfile(relpath, os.path.join(outfolder, relpath))

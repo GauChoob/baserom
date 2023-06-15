@@ -71,7 +71,7 @@ Script_Close::
     ret
 
 
-SECTION "Handler", ROM0
+SECTION "Handler", ROM0[$3800] ; TODO remove this hardcoded - easier for debugging as the breakpoint doesn't move
 Script_Do::
     ; Inputs:
     ;   hl = Script

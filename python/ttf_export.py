@@ -57,7 +57,7 @@ for id, character in enumerate(desired_characters):
     # Draw the character
     charimg = Image.new("RGBA", (8, 16))
     drawchar = ImageDraw.Draw(charimg)
-    drawchar.text((0, 0), str(character), font=font, fill=font_color)
+    drawchar.text((0, 2), str(character), font=font, fill=font_color)
     if character in 'MmWw':
         charimg = fix_MmWw(charimg)
 

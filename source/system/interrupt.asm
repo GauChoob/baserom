@@ -4,6 +4,16 @@ MACRO Interrupt_Disable
     ld [rIE], a
 ENDM
 
+MACRO VBlank_Graphics
+    ld a, [hVBlank_Requests]
+    bit VBLANK_FUNC_KEY, a
+    jr z, .SkipFunc\@
+        SwitchROMBank [hVBlank_Bank]
+        ld hl, hVBlank_Func
+        DerefHL
+        call CallHL
+    .SkipFunc\@:
+ENDM
 
 SECTION "HRAM VBLANK", HRAM
 
@@ -50,9 +60,10 @@ Interrupt_SetTimer::
 
     xor a
     ld [rIF], a
-    Set8 rTIMA, $77
     Set8 rIE, IEF_TIMER
+    ld a, $FF
     ei
+    ld [rTIMA], a
     ret
 
 Interrupt_SetVBlank::
@@ -62,19 +73,52 @@ Interrupt_SetVBlank::
     ei
     ret
 
+
+SECTION "Interrupt_VBlank", ROM0[$0040]
+Interrupt_VBlank::
+    jp VBlank_Interrupt
+
+SECTION "Interrupt_HBlank", ROM0[$0048]
+Interrupt_HBlank::
+    Crash
+    reti
+
+SECTION "Interrupt_Timer", ROM0[$0050]
+Interrupt_Timer::
+    jp Timer_Interrupt
+
+SECTION "Interrupt_Serial", ROM0[$0058]
+Interrupt_Serial::
+    Crash
+    reti
+
+SECTION "Interrupt_Joypad", ROM0[$0060]
+Interrupt_Joypad::
+    Crash
+    reti
+
 SECTION "Interrupt", ROM0[$3000] ; TODO remove this hardcoded - easier for debugging as the breakpoint doesn't move
 
 VBlank_Await::
-    ld a, [hVBlank_Requests]
-    or VBLANK_AWAIT_MASK
-    ld [hVBlank_Requests], a
-
-    halt
-    nop
-    .Wait:
+    ; Wait until the VBlank handler has run
+    ; If the screen is off, this function will run the graphics functions from the VBlank handler and immediately continue
+    ld a, [wLCD_LCDC]
+    or a
+    jr z, .ScreenOff
+    .ScreenOn:
         ld a, [hVBlank_Requests]
-        or a
-        jr nz, .Wait
+        or VBLANK_AWAIT_MASK
+        ld [hVBlank_Requests], a
+
+        halt
+        nop
+        .Wait:
+            ld a, [hVBlank_Requests]
+            or a
+            jr nz, .Wait
+            ret
+    .ScreenOff:
+        VBlank_Graphics
         ret
 
 VBlank_Func_Null:
@@ -105,14 +149,7 @@ VBlank_Interrupt::
     PushRAMBank
     PushROMBank
 
-    ld a, [hVBlank_Requests]
-    bit VBLANK_FUNC_KEY, a
-    jr z, .SkipFunc
-        SwitchROMBank [hVBlank_Bank]
-        ld hl, hVBlank_Func
-        DerefHL
-        call CallHL
-    .SkipFunc:
+    VBlank_Graphics
 
     ld a, [hVBlank_Requests]
     bit VBLANK_DMA_KEY, a
@@ -131,6 +168,26 @@ VBlank_Interrupt::
     RestoreRegisters
     reti
 
+Timer_Await::
+    ; Wait until the Timer handler has run
+
+    ; Time handler should not be running if Screen is on, exit immediately
+    ld a, [wLCD_LCDC]
+    or a
+    ret nz
+
+    ld a, [hVBlank_Requests]
+    or VBLANK_AWAIT_MASK
+    ld [hVBlank_Requests], a
+
+    halt
+    nop
+    .Wait:
+        ld a, [hVBlank_Requests]
+        or a
+        jr nz, .Wait
+        ret
+
 Timer_Interrupt::
     SaveRegisters
     PushRAMBank
@@ -138,7 +195,10 @@ Timer_Interrupt::
 
     ; Sound stuff
 
-    XCall Joypad_Update
+    ;XCall Joypad_Update
+
+    xor a
+    ld [hVBlank_Requests], a
 
     ei
     PopROMBank

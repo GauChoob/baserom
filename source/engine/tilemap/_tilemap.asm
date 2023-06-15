@@ -1,0 +1,1 @@
+INCLUDE "source/engine/tilemap/tilemap_static.asm"

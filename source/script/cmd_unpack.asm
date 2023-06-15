@@ -22,3 +22,24 @@ Cmd_Palette::
     pop hl
     call Palette_Unpack
     ret
+
+MACRO StaticTilemap
+    db Enum_Cmd_StaticTilemap
+    BankAddress \1 ; StaticTileAttrmap
+    dw \2          ; Destination
+ENDM
+Cmd_StaticTilemap::
+    ; LCD must be off
+    ; Arguments:
+    ;   BankAddress of StaticTileAttrmap
+    ;   dw  Destination
+    Script_ReadByte d
+    Script_ReadWord hl
+    push hl
+    Script_ReadWord hl
+    Set16 hScript_Current.Address, bc
+    pop bc
+    call Tilemap_Static_UnpackTileAttr
+
+    Get16 bc, hScript_Current.Address
+    jp Script_Read

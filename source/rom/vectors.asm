@@ -22,26 +22,3 @@ SECTION "RST_30", ROM0[$0030]
 SECTION "RST_38", ROM0[$0038]
     Crash
 
-
-SECTION "Interrupt_VBlank", ROM0[$0040]
-Interrupt_VBlank::
-    jp VBlank_Interrupt
-
-SECTION "Interrupt_HBlank", ROM0[$0048]
-Interrupt_HBlank::
-    jp Timer_Interrupt
-
-SECTION "Interrupt_Timer", ROM0[$0050]
-Interrupt_Timer::
-    Crash
-    reti
-
-SECTION "Interrupt_Serial", ROM0[$0058]
-Interrupt_Serial::
-    Crash
-    reti
-
-SECTION "Interrupt_Joypad", ROM0[$0060]
-Interrupt_Joypad::
-    Crash
-    reti
