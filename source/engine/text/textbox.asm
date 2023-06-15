@@ -1,9 +1,11 @@
 MACRO Textbox_Open
     Set16 wTextbox_SlideFrame, Textbox_Data_Opening
+    Set16 wTextbox_SlideEnd, Textbox_Data_Opening.End
 ENDM
 
 MACRO Textbox_Close
     Set16 wTextbox_SlideFrame, Textbox_Data_Closing
+    Set16 wTextbox_SlideEnd, Textbox_Data_Closing.End
 ENDM
 
 
@@ -25,11 +27,11 @@ Textbox_VBlank_LoadTilemap::
     ld bc, STATICTILE_TestText
     ld hl, $9C00
     call Tilemap_Static_UnpackTileAttr
+    Set8 hVBlank_VBK, 1
     Set8 hVBlank_Bank, BANK(Textbox_VBlank_ClearText)
     Set16 hVBlank_Func, Textbox_VBlank_ClearText
     ret
 
-Textbox_VBlank_LoadPortrait::
 
 SECTION "TextboxX", ROMX
 
@@ -42,9 +44,9 @@ Textbox_VBlank_ClearText::
     ENDR
     Set8 hVBlank_VBK, 1
     Set16 hVBlank_Dest, $9000
-    Set16 hVBlank_Source, wTextbox_PortraitAddress
-    Set8 hVBlank_Bank, wTextbox_PortraitBank
-    Set16 hVBlank_Func, Textbox_VBlank_LoadPortrait
+    Mov16 hVBlank_Source, wTextbox_PortraitAddress
+    Mov8 hVBlank_Bank, wTextbox_PortraitBank
+    Set16 hVBlank_Func, VBlank_Func_CopyTile
     Set8 hVBlank_TileCount, 16
     ret
 
@@ -53,7 +55,7 @@ Textbox_Init::
     Set16 wTextbox_SlideFrame, $0000
     ret
 
-Textbox_Data_Opening:
+Textbox_Data_Closing:
     ; WY position
     ds 3, 112
     ds 3, 113
@@ -71,7 +73,7 @@ Textbox_Data_Opening:
     db 145
     .End:
 
-Textbox_Data_Closing:
+Textbox_Data_Opening:
     ; WY position
     db 145
     db 140

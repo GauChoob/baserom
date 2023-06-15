@@ -18,12 +18,14 @@ SCRIPT_Pal1::
     End
 
 SCRIPT_Text::
-    StaticTilemap STATICTILE_TestText, $9800
+    ;StaticTilemap STATICTILE_TestText, $9800
     LCDOn
+    TextboxPortrait PORTRAIT_Girl
+    TextboxOpen
     Write "Well🅐 Hello!🅐 This🅐 is a sam" ;ple text. !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_abcdefghijklmnopqrstuvwxyz\{|}~ ¡¢£¤¥¦§¨©ª«¬®°±²³´µ¶¹º»¿×÷
     .Loop:
-        TextboxOpen
         TextboxClose
+        TextboxOpen
         Jump .Loop
     End
 

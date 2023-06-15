@@ -15,6 +15,7 @@ SECTION "LCD", ROM0
 
 LCD_Init::
     ; Hide the window by default
+    Set8 rWX, 7
     Set8 rWY, 144
     call LCD_Off
     ret

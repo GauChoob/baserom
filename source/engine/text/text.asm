@@ -36,6 +36,7 @@ Text_Init::
 Text_ResetBuffer::
     xor a
     ld [wText_CharWidth], a
+    inc a
     ld [wText_DestinationOffset], a
 
     ld b, $00

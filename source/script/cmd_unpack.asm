@@ -11,7 +11,7 @@ Cmd_Palette::
     ;   BankAddress of Palette
     ;   db  Destination offset
     ;   db  Targets
-    Script_ReserveGraphics
+    Script_AwaitAvailableVBlankFunc
 
     Script_ReadByte a
     push af

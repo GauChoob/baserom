@@ -19,7 +19,7 @@ MACRO Script_MovWord
     Script_ReadByte [\1 + 1]
 ENDM
 
-MACRO Script_ReserveGraphics
+MACRO Script_AwaitAvailableVBlankFunc
     ; If VBlank already has a planned graphics function, Wait 1 frame and try again next frame
     ; Destroys hl
     Get16 hl, hVBlank_Func

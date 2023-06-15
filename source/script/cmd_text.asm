@@ -1,4 +1,44 @@
-SECTION "Text", ROM0
+SECTION "CmdText", ROM0
+
+MACRO TextboxPortrait
+    db Enum_Cmd_TextboxPortrait
+    BankAddress \1
+ENDM
+Cmd_TextboxPortrait::
+    ; Initializes the textbox and loads a portrait
+    ; Arguments:
+    ;   BankAddress portrait
+
+    ld a, [hScript_Current.SmallCounter]
+    or a
+    jr nz, .Waiting
+    .Init:
+        inc a
+        ld [hScript_Current.SmallCounter], a
+
+        dec bc
+        Set16 hScript_Current.Address, bc
+        inc bc
+
+        Script_ReadByte [wTextbox_PortraitBank]
+        Script_MovWord wTextbox_PortraitAddress
+
+        Set8 hVBlank_VBK, 1
+        Set8 hVBlank_Bank, BANK(Textbox_VBlank_LoadTilemap)
+        Set16 hVBlank_Func, Textbox_VBlank_LoadTilemap
+        ret
+    .Waiting:
+        ; We wait until VBlank Func is cleared
+        Script_AwaitAvailableVBlankFunc
+
+        ; Then we can continue to the next command
+        xor a
+        ld [hScript_Current.SmallCounter], a
+
+        inc bc
+        inc bc
+        inc bc
+        jp Script_Read
 
 
 MACRO TextboxClose
@@ -34,7 +74,7 @@ Cmd_Write::
     ; Write the text
     ; Arguments:
     ;   ds - Text to write
-    Script_ReserveGraphics
+    Script_AwaitAvailableVBlankFunc
 
     dec bc
     Set16 hScript_Current.Address, bc
