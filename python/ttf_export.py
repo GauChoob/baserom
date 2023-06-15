@@ -6,6 +6,7 @@ import projutils.color as color
 
 # use a truetype font (.ttf)
 # font file https://managore.itch.io/m6x11
+# Other font files https://somepx.itch.io/humble-fonts-free
 font_path = "python/data/"
 font_name = "m6x11.ttf"
 out_path = "python/out/"
