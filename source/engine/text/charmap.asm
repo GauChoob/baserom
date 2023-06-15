@@ -2,7 +2,9 @@
 ; Generated via python/ttf_export.py
 
 NEWCHARMAP BASE
-CHARMAP "🛑", $FF
+CHARMAP "🅐", $FD  ; Wait
+CHARMAP "⭍", $FE  ; Newline
+CHARMAP "🛑", $FF ; EOF
 
 
 NEWCHARMAP Tall_FONT, BASE

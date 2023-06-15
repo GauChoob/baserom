@@ -59,7 +59,7 @@ Palette_VBlank_Background::
         ld a, [hl+]
         ld [$FF00+c], a
     ENDR
-    Set16 hVBlank_Func, VBlank_Func_Null
+    Set16 hVBlank_Func, $0000
     ret
 
 Palette_VBlank_Sprite::
@@ -70,7 +70,7 @@ Palette_VBlank_Sprite::
         ld a, [hl+]
         ld [$FF00+c], a
     ENDR
-    Set16 hVBlank_Func, VBlank_Func_Null
+    Set16 hVBlank_Func, $0000
     ret
 
 Palette_VBlank_Both::
@@ -127,9 +127,6 @@ Palette_Unpack::
         ld hl, wPalette_Shadow
         call Palette_UnpackToDestination
 
-        ld a, [hVBlank_Requests]
-        or VBLANK_FUNC_MASK
-        ld [hVBlank_Requests], a
         Set8 hVBlank_Bank, BANK(Palette_VBlank_Both)
         Set16 hVBlank_Func, Palette_VBlank_Both
     .SkipShadow:

@@ -155,9 +155,6 @@ Text_PrepareCharacter::
         jr nz, .Loop
 
     ; Set up VBlank
-    ld a, [hVBlank_Requests]
-    or VBLANK_FUNC_MASK
-    ld [hVBlank_Requests], a
     Mov16 hVBlank_Dest, wText_DestinationAddress
     Set16 hVBlank_Source, wText_TilesetBuffer
     Set16 hVBlank_Func, VBlank_Func_CopyTile

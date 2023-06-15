@@ -8,8 +8,6 @@ Tilemap_Static_Unpack:
     ; Destroys:
     ;   bc = Points to end of file
     ;   All
-    LCD_AssertOff
-
     PushROMBank
     SwitchROMBank d
 

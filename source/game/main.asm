@@ -11,13 +11,14 @@ Reset::
     Stack_Init
     call System_Init
     XCall Text_Init
+    XCall Textbox_Init
     XCall Script_Init
     jp Game_Init
 
 Game_Init::
     ld hl, wScript_Main
-    ld c, BANK(SCRIPT_Text)
-    ld de, SCRIPT_Text
+    ld c, BANK(SCRIPT_Init)
+    ld de, SCRIPT_Init
     XCall Script_Set
 
     jp Game_Loop

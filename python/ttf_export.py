@@ -108,7 +108,9 @@ with open(out_path + 'charmap.asm', 'w', encoding='utf-8') as f:
         f.write("; Font is https://managore.itch.io/m6x11 by Daniel Linssen\n")
         f.write("; Generated via python/ttf_export.py\n\n")
         f.write("NEWCHARMAP BASE\n")
-        f.write('CHARMAP "🛑", $FF\n')
+        f.write('CHARMAP "🅐", $FD ; Wait\n')
+        f.write('CHARMAP "⭍", $FE ; Newline\n')
+        f.write('CHARMAP "🛑", $FF ; EOF\n')
         f.write("\n\n")
     def write_charmap(data, name: str):
         f.write(f"NEWCHARMAP {name}_FONT, BASE\n")

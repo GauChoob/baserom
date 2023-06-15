@@ -11,6 +11,8 @@ Cmd_Palette::
     ;   BankAddress of Palette
     ;   db  Destination offset
     ;   db  Targets
+    Script_ReserveGraphics
+
     Script_ReadByte a
     push af
     Script_ReadWord hl
@@ -33,6 +35,8 @@ Cmd_StaticTilemap::
     ; Arguments:
     ;   BankAddress of StaticTileAttrmap
     ;   dw  Destination
+    LCD_AssertOff
+
     Script_ReadByte d
     Script_ReadWord hl
     push hl

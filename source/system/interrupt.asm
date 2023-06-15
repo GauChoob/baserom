@@ -5,22 +5,21 @@ MACRO Interrupt_Disable
 ENDM
 
 MACRO VBlank_Graphics
-    ld a, [hVBlank_Requests]
-    bit VBLANK_FUNC_KEY, a
+    SwitchROMBank [hVBlank_Bank]
+    Get16 hl, hVBlank_Func
+    
+    ; Skip if hl == $0000
+    or h
     jr z, .SkipFunc\@
-        SwitchROMBank [hVBlank_Bank]
-        ld hl, hVBlank_Func
-        DerefHL
         call CallHL
     .SkipFunc\@:
 ENDM
+
 
 SECTION "HRAM VBLANK", HRAM
 
 DEF VBLANK_DMA_MASK EQU %00000001
 DEF VBLANK_DMA_KEY EQU 0
-DEF VBLANK_FUNC_MASK EQU %00000010
-DEF VBLANK_FUNC_KEY EQU 1
 DEF VBLANK_AWAIT_MASK EQU %10000000
 DEF VBLANK_AWAIT_KEY EQU 7
 hVBlank_Requests::
@@ -48,7 +47,7 @@ Interrupt_Init::
     ld [rIF], a
     ld [rIE], a
 
-    Set16 hVBlank_Func, VBlank_Func_Null
+    Set16 hVBlank_Func, $0000
     ret
 
 Interrupt_SetTimer::
@@ -125,11 +124,12 @@ VBlank_Func_Null:
     ret
 
 VBlank_Func_CopyTile::
-    ; Copy $10 bytes from hVBlank_Source to hVBlank_Dest
+    ; Copy x tiles from hVBlank_Source to hVBlank_Dest
     ; Arguments:
     ;   wVBlank_SourceAddress
     ;   hVBlank_VBK
     ;   hVBlank_Dest
+    ;   hVBlank_TileCount
     Get16 hl, hVBlank_Source
     Get16 bc, hVBlank_Dest
     Mov8 rVBK, hVBlank_VBK
@@ -140,7 +140,7 @@ VBlank_Func_CopyTile::
         ENDR
         dec d
         jr nz, .Loop
-    Set16 hVBlank_Func, VBlank_Func_Null
+    Set16 hVBlank_Func, $0000
     ret
 
 
@@ -156,6 +156,8 @@ VBlank_Interrupt::
     jr z, .SkipDMA
         call hDMA_Transfer
     .SkipDMA:
+
+    XCall Textbox_VBlank_Slide
 
     XCall Joypad_Update
 

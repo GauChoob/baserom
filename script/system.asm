@@ -1,5 +1,11 @@
 SECTION "SCRIPT_SYSTEM", ROMX
 
+SCRIPT_Init::
+    Palette PAL_Menu, 56, PALETTE_UNPACK_SHADOW_MASK | PALETTE_UNPACK_TARGET_MASK
+    Palette PAL_TestSprite, 64, PALETTE_UNPACK_SHADOW_MASK | PALETTE_UNPACK_TARGET_MASK
+    Jump SCRIPT_Text
+
+
 SCRIPT_None::
     End
 
@@ -12,11 +18,13 @@ SCRIPT_Pal1::
     End
 
 SCRIPT_Text::
-    Palette PAL_Menu, 56, PALETTE_UNPACK_SHADOW_MASK | PALETTE_UNPACK_TARGET_MASK
-    Palette PAL_TestSprite, 64, PALETTE_UNPACK_SHADOW_MASK | PALETTE_UNPACK_TARGET_MASK
     StaticTilemap STATICTILE_TestText, $9800
     LCDOn
-    Write "Well Hello! This is a sample text. !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFG" ;HIJKLMNOPQRSTUVWXYZ[\\]^_abcdefghijklmnopqrstuvwxyz\{|}~ ¡¢£¤¥¦§¨©ª«¬®°±²³´µ¶¹º»¿×÷
+    Write "Well🅐 Hello!🅐 This🅐 is a sam" ;ple text. !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_abcdefghijklmnopqrstuvwxyz\{|}~ ¡¢£¤¥¦§¨©ª«¬®°±²³´µ¶¹º»¿×÷
+    .Loop:
+        TextboxOpen
+        TextboxClose
+        Jump .Loop
     End
 
 SCRIPT_LCD::

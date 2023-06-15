@@ -18,6 +18,8 @@ Script_Table::
     Script_AddCommand Cmd_LCDOff
     Script_AddCommand Cmd_LCDOn
     ; text.asm
+    Script_AddCommand Cmd_TextboxClose
+    Script_AddCommand Cmd_TextboxOpen
     Script_AddCommand Cmd_Write
     ; unpack.asm
     Script_AddCommand Cmd_Palette
