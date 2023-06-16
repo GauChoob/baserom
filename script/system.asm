@@ -22,7 +22,7 @@ SCRIPT_Text::
     LCDOn
     TextboxPortrait PORTRAIT_Girl
     TextboxOpen
-    Write "Well🅐 Hello!🅐 This🅐 is a sam" ;ple text. !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_abcdefghijklmnopqrstuvwxyz\{|}~ ¡¢£¤¥¦§¨©ª«¬®°±²³´µ¶¹º»¿×÷
+    Write "Well Hello! This is a⭍sample text.🅐⭍How do you do?⭍:)🅐" ;ple text. !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_abcdefghijklmnopqrstuvwxyz\{|}~ ¡¢£¤¥¦§¨©ª«¬®°±²³´µ¶¹º»¿×÷
     .Loop:
         TextboxClose
         TextboxOpen

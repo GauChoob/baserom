@@ -25,11 +25,11 @@ class ByteVal:
 for i in range(4):
     for j in range(20):
         if j < 4:
-            id = i*4 + j
+            id = 0x30 + i*4 + j
         else:
             row_offset = i % 2
             row = i//2
-            id = row*32 + (j-4)*2 + row_offset + 16
+            id = row*32 + (j-4)*2 + row_offset + 0x40
         tm.map.append(id)
 
 tm.save_original_file('python/out/text_test.tilemap')

@@ -74,6 +74,7 @@ Cmd_Write::
     ; Write the text
     ; Arguments:
     ;   ds - Text to write
+
     Script_AwaitAvailableVBlankFunc
 
     dec bc
@@ -89,7 +90,7 @@ Cmd_Write::
     .Init:
         push hl
         push bc
-        Text_Setup 1, $9300
+        Text_Setup 1, TEXTBOX_LINE1
         pop bc
         pop hl
     .MainLoop
@@ -109,18 +110,45 @@ Cmd_Write::
         .EOF:
             xor a
             ld [hScript_Current.SmallCounter], a
+            ld [hScript_Current.BigCounter], a
             inc hl
             Set16 hScript_Current.Address, hl
             ld b, h
             ld c, l
             jp Script_Read
         .Newline:
-            Crash
+            ld a, [hScript_Current.SmallCounter]
+            or a
+            jr nz, .SecondLine
+            .FirstLine:
+                ; Just go to line 2
+                inc a
+                ld [hScript_Current.BigCounter], a
+                Text_Setup 1, TEXTBOX_LINE2
+                ; Then immediately read the next character
+                jp Script_Read
+
+            .SecondLine:
+                ; We need to erase the previous lines and go back to the top line
+                xor a
+                ld [hScript_Current.BigCounter], a
+
+                Text_Setup 1, TEXTBOX_LINE1
+
+                ; This will VBlank twice to clear the tileset
+                ; There is also a third VBlank to redraw the portrait (which doesn't do anything, but it's simpler to just leave it in at this point)
+                ; Since this Cmd cannot run if there is a Vblank function, it will automatically wait
+                Set8 hVBlank_VBK, 1
+                Set8 hVBlank_Bank, BANK(Textbox_VBlank_ClearText1)
+                Set16 hVBlank_Func, Textbox_VBlank_ClearText1
+                ret
         .Wait:
+            ; Wait until A is pressed
             ld a, [wJoypad_Held]
             and Joypad_MASK_A
             jr nz, .Continue
             .Awaiting:
+                ; Don't increment
                 ld a, [hScript_Current.SmallCounter]
                 dec a
                 ld [hScript_Current.SmallCounter], a

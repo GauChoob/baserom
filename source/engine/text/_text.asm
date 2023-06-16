@@ -1,4 +1,4 @@
-TEXT_BANK EQU $10
+INCLUDE "source/engine/text/include.asm"
 
 INCLUDE "source/engine/text/charmap.asm"
 

@@ -23,33 +23,52 @@ wTextbox_PortraitAddress::
 SECTION "Textbox", ROM0
 
 Textbox_VBlank_LoadTilemap::
+    ; VBlank #1/4 - Takes up around 80% of VBlank!
     ld d, BANK(STATICTILE_TestText)
     ld bc, STATICTILE_TestText
-    ld hl, $9C00
+    ld hl, TEXTBOX_TILEMAP
     call Tilemap_Static_UnpackTileAttr
     Set8 hVBlank_VBK, 1
-    Set8 hVBlank_Bank, BANK(Textbox_VBlank_ClearText)
-    Set16 hVBlank_Func, Textbox_VBlank_ClearText
+    Set8 hVBlank_Bank, BANK(Textbox_VBlank_ClearText1)
+    Set16 hVBlank_Func, Textbox_VBlank_ClearText1
     ret
 
 
 SECTION "TextboxX", ROMX
 
-Textbox_VBlank_ClearText::
-    ; 125 16*8
-    ld hl, $9100
+_Textbox_VBlank_ClearText:
     xor a
-    REPT $100*4
+    REPT $100*2
         ld [hl+], a
     ENDR
+    ret
+
+
+Textbox_VBlank_ClearText1::
+    ; VBlank #3/4 - 40% of VBlank
+    ; Clear TEXTBOX_LINE1
+    ld hl, TEXTBOX_LINE1
+    call _Textbox_VBlank_ClearText
+
     Set8 hVBlank_VBK, 1
-    Set16 hVBlank_Dest, $9000
+    Set8 hVBlank_Bank, BANK(Textbox_VBlank_ClearText2)
+    Set16 hVBlank_Func, Textbox_VBlank_ClearText2
+    ret
+
+Textbox_VBlank_ClearText2::
+    ; VBlank #4/4 - 40% of VBlank
+    ; Clear TEXTBOX_LINE2
+    ld hl, TEXTBOX_LINE2
+    call _Textbox_VBlank_ClearText
+
+    ; VBlank #5 - Copy the portrait - about 70% of VBlank
+    Set8 hVBlank_VBK, 1
+    Set16 hVBlank_Dest, TEXTBOX_PORTRAIT
     Mov16 hVBlank_Source, wTextbox_PortraitAddress
     Mov8 hVBlank_Bank, wTextbox_PortraitBank
     Set16 hVBlank_Func, VBlank_Func_CopyTile
     Set8 hVBlank_TileCount, 16
     ret
-
 
 Textbox_Init::
     Set16 wTextbox_SlideFrame, $0000
