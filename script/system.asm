@@ -22,11 +22,11 @@ SCRIPT_Text::
     LCDOn
     TextboxPortrait PORTRAIT_Girl
     TextboxOpen
-    Write "Well Hello! This is a⭍sample text.🅐⭍How do you do?⭍:)🅐" ;ple text. !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_abcdefghijklmnopqrstuvwxyz\{|}~ ¡¢£¤¥¦§¨©ª«¬®°±²³´µ¶¹º»¿×÷
-    .Loop:
-        TextboxClose
-        TextboxOpen
-        Jump .Loop
+    Write "Well Hello! This is a⭍sample text.🅐⭍How do you do?⭍:)🅐"
+
+    TextboxPortrait PORTRAIT_Guard
+    Write "Rawwwr⭍Scary.🅐⭍The end⭍±@¢£¤¬¦²³¼🅐"
+    TextboxClose
     End
 
 SCRIPT_LCD::

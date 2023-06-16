@@ -23,6 +23,7 @@ Cmd_TextboxPortrait::
         Script_ReadByte [wTextbox_PortraitBank]
         Script_MovWord wTextbox_PortraitAddress
 
+        Set8 wTextbox_VBlank_DoPortrait, 1
         Set8 hVBlank_VBK, 1
         Set8 hVBlank_Bank, BANK(Textbox_VBlank_LoadTilemap)
         Set16 hVBlank_Func, Textbox_VBlank_LoadTilemap
@@ -117,26 +118,29 @@ Cmd_Write::
             ld c, l
             jp Script_Read
         .Newline:
-            ld a, [hScript_Current.SmallCounter]
+            ld a, [hScript_Current.BigCounter]
             or a
             jr nz, .SecondLine
             .FirstLine:
                 ; Just go to line 2
                 inc a
                 ld [hScript_Current.BigCounter], a
+
                 Text_Setup 1, TEXTBOX_LINE2
                 ; Then immediately read the next character
+                Get16 bc, hScript_Current.Address
                 jp Script_Read
 
             .SecondLine:
                 ; We need to erase the previous lines and go back to the top line
                 xor a
                 ld [hScript_Current.BigCounter], a
+                ld [wTextbox_VBlank_DoPortrait], a ;We don't want to update the Portrait during VBlank
 
                 Text_Setup 1, TEXTBOX_LINE1
 
                 ; This will VBlank twice to clear the tileset
-                ; There is also a third VBlank to redraw the portrait (which doesn't do anything, but it's simpler to just leave it in at this point)
+                ; There is also a third VBlank to redraw the portrait which we disable above
                 ; Since this Cmd cannot run if there is a Vblank function, it will automatically wait
                 Set8 hVBlank_VBK, 1
                 Set8 hVBlank_Bank, BANK(Textbox_VBlank_ClearText1)

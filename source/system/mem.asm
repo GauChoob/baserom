@@ -16,7 +16,6 @@ Mem_Set::
     ;   b = byte
     ;   hl = destination
     ;   de = size
-    ld a, b
     .Loop:
         ld a, b
         ld [hl+], a

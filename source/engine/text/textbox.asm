@@ -19,6 +19,8 @@ wTextbox_PortraitBank::
     db
 wTextbox_PortraitAddress::
     dw
+wTextbox_VBlank_DoPortrait::
+    db
 
 SECTION "Textbox", ROM0
 
@@ -61,14 +63,21 @@ Textbox_VBlank_ClearText2::
     ld hl, TEXTBOX_LINE2
     call _Textbox_VBlank_ClearText
 
-    ; VBlank #5 - Copy the portrait - about 70% of VBlank
-    Set8 hVBlank_VBK, 1
-    Set16 hVBlank_Dest, TEXTBOX_PORTRAIT
-    Mov16 hVBlank_Source, wTextbox_PortraitAddress
-    Mov8 hVBlank_Bank, wTextbox_PortraitBank
-    Set16 hVBlank_Func, VBlank_Func_CopyTile
-    Set8 hVBlank_TileCount, 16
-    ret
+    ; VBlank #5 - Copy the portrait - about 70% of VBlank. Skip if disabled
+    ld a, [wTextbox_VBlank_DoPortrait]
+    or a
+    jr z, .SkipPortrait
+    .DoPortrait:
+        Set8 hVBlank_VBK, 1
+        Set16 hVBlank_Dest, TEXTBOX_PORTRAIT
+        Mov16 hVBlank_Source, wTextbox_PortraitAddress
+        Mov8 hVBlank_Bank, wTextbox_PortraitBank
+        Set16 hVBlank_Func, VBlank_Func_CopyTile
+        Set8 hVBlank_TileCount, 16
+        ret
+    .SkipPortrait:
+        Set16 hVBlank_Func, $0000
+        ret
 
 Textbox_Init::
     Set16 wTextbox_SlideFrame, $0000
