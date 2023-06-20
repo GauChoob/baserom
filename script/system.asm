@@ -3,7 +3,7 @@ SECTION "SCRIPT_SYSTEM", ROMX
 SCRIPT_Init::
     Palette PAL_Menu, 56, PALETTE_UNPACK_SHADOW_MASK | PALETTE_UNPACK_TARGET_MASK
     Palette PAL_TestSprite, 64, PALETTE_UNPACK_SHADOW_MASK | PALETTE_UNPACK_TARGET_MASK
-    Jump SCRIPT_Text
+    Jump SCRIPT_Tileset
 
 
 SCRIPT_None::
@@ -25,7 +25,7 @@ SCRIPT_Text::
     Write "Well Hello! This is a⭍sample text.🅐⭍How do you do?⭍:)🅐"
 
     TextboxPortrait PORTRAIT_Guard
-    Write "Rawwwr⭍Scary.🅐⭍The end⭍±@¢£¤¬¦²³¼🅐"
+    Write "Rawwwr⭍Scary.🅐⭍The end🅐"
     TextboxClose
     End
 
@@ -35,4 +35,15 @@ SCRIPT_LCD::
     Wait 3
     LCDOff
     Wait 3
+    End
+
+SCRIPT_Tileset::
+    Tileset TILESET_Girl, $9000, 1
+
+
+    LCDOn
+    TextboxPortrait PORTRAIT_Girl
+    TextboxOpen
+    Write "Well Hello! This is a⭍sample text.🅐⭍How do you do?⭍:)🅐"
+    TextboxClose
     End

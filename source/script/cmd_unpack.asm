@@ -47,3 +47,26 @@ Cmd_StaticTilemap::
 
     Get16 bc, hScript_Current.Address
     jp Script_Read
+
+MACRO Tileset
+    db Enum_Cmd_Tileset
+    BankAddress \1 ; Tileset
+    dw \2          ; Destination
+    db \3          ; VBK bank
+ENDM
+Cmd_Tileset::
+    LCD_AssertOff
+
+    Script_ReadByte d
+    Script_ReadWord hl
+    push hl
+    Script_ReadWord hl
+    Script_ReadByte a
+    push af
+    Set16 hScript_Current.Address, bc
+    pop af
+    pop bc
+    call Tileset_Unpack
+
+    Get16 bc, hScript_Current.Address
+    jp Script_Read

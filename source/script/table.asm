@@ -25,3 +25,4 @@ Script_Table::
     ; unpack.asm
     Script_AddCommand Cmd_Palette
     Script_AddCommand Cmd_StaticTilemap
+    Script_AddCommand Cmd_Tileset
