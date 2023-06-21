@@ -15,6 +15,7 @@ MACRO Actor_Struct
     db
 .OAMScript:
     dw
+ENDM
 
 SECTION "WRAM Actor", WRAM0
 wHero::

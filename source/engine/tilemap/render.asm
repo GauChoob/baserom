@@ -67,7 +67,7 @@ Tilemap_Render_VBlank_CopyColumn::
         inc bc
         IF loop != (TILEMAP_GAME_HEIGHT - 1)
             add hl, de
-        ENDR
+        ENDC
     ENDR
 
     Set8 rVBK, 1
@@ -78,7 +78,7 @@ Tilemap_Render_VBlank_CopyColumn::
         IF loop != (TILEMAP_GAME_HEIGHT - 1)
             inc bc
             add hl, de
-        ENDR
+        ENDC
     ENDR
     ret
 
@@ -153,10 +153,12 @@ Tilemap_Render_Base::
     ;   wScreen_X
     LCD_AssertOff
 
+    ; Update the screen position
     xor a
     ld [rSCY], a
     Mov8 rSCX, wScreen_X
 
+    ; Render all the columns
     ld de, 31
     .RenderLoop:
         call Tilemap_Render_ColumnPrepare

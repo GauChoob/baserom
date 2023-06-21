@@ -1,4 +1,4 @@
-TILEMAP_GAME_HEIGHT EQU 10
+
 
 SECTION "WRAM Tilemap Game", WRAM0
 wTilemap_Width::

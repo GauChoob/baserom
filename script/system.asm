@@ -3,7 +3,7 @@ SECTION "SCRIPT_SYSTEM", ROMX
 SCRIPT_Init::
     Palette PAL_Menu, 56, PALETTE_UNPACK_SHADOW_MASK | PALETTE_UNPACK_TARGET_MASK
     Palette PAL_TestSprite, 64, PALETTE_UNPACK_SHADOW_MASK | PALETTE_UNPACK_TARGET_MASK
-    Jump SCRIPT_Tileset
+    Jump SCRIPT_Scene
 
 
 SCRIPT_None::
@@ -46,4 +46,11 @@ SCRIPT_Tileset::
     TextboxOpen
     Write "Well Hello! This is a⭍sample text.🅐⭍How do you do?⭍:)🅐"
     TextboxClose
+    End
+
+SCRIPT_Scene::
+    Tileset TILESET_Numbers, $9000, 0
+    GameTilemap TILEMAP_TestText
+    
+    LCDOn
     End
