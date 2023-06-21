@@ -23,6 +23,7 @@ Script_Table::
     Script_AddCommand Cmd_TextboxPortrait
     Script_AddCommand Cmd_Write
     ; unpack.asm
+    Script_AddCommand Cmd_GameTilemap
     Script_AddCommand Cmd_Palette
     Script_AddCommand Cmd_StaticTilemap
     Script_AddCommand Cmd_Tileset

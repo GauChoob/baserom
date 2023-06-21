@@ -42,6 +42,22 @@ MACRO PopROMBank
     ld [rROMB0], a
 ENDM
 
+MACRO SRAM_On
+    ; Enables read/write to external ram
+    ld a, $0A
+    ld [rRAMG], a
+ENDM
+
+MACRO SRAM_Off
+    ; Disables read/write to external ram
+    xor a
+    ld [rRAMG], a
+ENDM
+
+MACRO SwitchSRAMBank
+    ld a, \1
+    ld [rRAMB], a
+ENDM
 
 SECTION "WRAM Banks", WRAM0
 

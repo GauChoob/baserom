@@ -39,7 +39,7 @@ SCRIPT_LCD::
 
 SCRIPT_Tileset::
     Tileset TILESET_Girl, $9000, 1
-
+    GameTilemap TILEMAP_TestText
 
     LCDOn
     TextboxPortrait PORTRAIT_Girl

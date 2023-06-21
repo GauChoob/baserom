@@ -15,6 +15,13 @@ Tilemap_Static_Unpack:
     ld a, [bc]
     ld d, a
     inc bc
+    ; assert width upper nibble is 0
+    ld a, [bc]
+    inc bc
+    or a
+    jr z, .Pass
+        Crash
+    .Pass:
 
     ; height
     ld a, [bc]

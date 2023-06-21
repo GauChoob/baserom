@@ -48,6 +48,26 @@ Cmd_StaticTilemap::
     Get16 bc, hScript_Current.Address
     jp Script_Read
 
+MACRO GameTilemap
+    db Enum_Cmd_GameTilemap
+    BankAddress \1 ; GameTileAttrmap
+ENDM
+Cmd_GameTilemap::
+    ; LCD must be off
+    ; Arguments:
+    ;   BankAddress of GameTileAttrmap
+    LCD_AssertOff
+
+    Script_ReadByte d
+    Script_ReadWord hl
+    Set16 hScript_Current.Address, bc
+    ld b, h
+    ld c, l
+    call Tilemap_Game_UnpackTileAttr
+
+    Get16 bc, hScript_Current.Address
+    jp Script_Read
+
 MACRO Tileset
     db Enum_Cmd_Tileset
     BankAddress \1 ; Tileset
