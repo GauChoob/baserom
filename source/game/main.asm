@@ -12,6 +12,7 @@ Reset::
     call System_Init
     XCall Text_Init
     XCall Textbox_Init
+    XCall Tilemap_Render_Init
     XCall Script_Init
     jp Game_Init
 
