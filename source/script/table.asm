@@ -9,22 +9,27 @@ SECTION "ScriptTable", ROM0
 
 RSRESET
 Script_Table::
-    ; camera.asm
+    ; cmd_camera.asm
     Script_AddCommand Cmd_CameraOn
-    ; control.asm
+    ; cmd_control.asm
     Script_AddCommand Cmd_Wait
     Script_AddCommand Cmd_End
     Script_AddCommand Cmd_Jump
     Script_AddCommand Cmd_JumpTable
-    ; system.asm
+    ; cmd_ram.asm
+    Script_AddCommand Cmd_RamAdd8
+    Script_AddCommand Cmd_RamAdd16
+    Script_AddCommand Cmd_RamSet8
+    Script_AddCommand Cmd_RamSet16
+    ; cmd_system.asm
     Script_AddCommand Cmd_LCDOff
     Script_AddCommand Cmd_LCDOn
-    ; text.asm
+    ; cmd_text.asm
     Script_AddCommand Cmd_TextboxClose
     Script_AddCommand Cmd_TextboxOpen
     Script_AddCommand Cmd_TextboxPortrait
     Script_AddCommand Cmd_Write
-    ; unpack.asm
+    ; cmd_unpack.asm
     Script_AddCommand Cmd_GameTilemap
     Script_AddCommand Cmd_Palette
     Script_AddCommand Cmd_StaticTilemap

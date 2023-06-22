@@ -1,4 +1,7 @@
-RENDER_TILEMAP EQU $9900
+TILEMAP_GAME EQU $9900
+CAMERA_LEFT_LIMIT EQU 4
+CAMERA_RIGHT_LIMIT EQU 8
+ASSERT CAMERA_LEFT_LIMIT + 20 + CAMERA_RIGHT_LIMIT == 32
 
 SECTION "WRAM Tilemap Render", WRAM0
 wScreen_X::
@@ -10,6 +13,10 @@ CAMERA_STATUS_OFF EQU 0
 CAMERA_STATUS_ON EQU 1
 wCamera_Status::
     db
+wCamera_PendingRenders_Left::
+    db
+wCamera_PendingRenders_Right::
+    db
 
 
 SECTION "Tilemap Render", ROMX
@@ -17,14 +24,15 @@ SECTION "Tilemap Render", ROMX
 Camera_Init::
     xor a
     ld [wScreen_X], a
+    ld [wScreen_X + 1], a
     ld [wCamera_Status], a
     ret
 
 Camera_CalculateScreenPosition::
-    ; wScreen_X = wHero.X - (wHero.X*20/wTilemap_Width)
+    ; wScreen_X = wActor_Hero.X - (wActor_Hero.X*20/wTilemap_Width)
 
-    ; hl = wHero.X*20
-    Get16 hl, wHero.X
+    ; hl = wActor_Hero.X*20
+    Get16 hl, wActor_Hero.X
     push hl
     ld e, l
     ld d, h
@@ -34,14 +42,14 @@ Camera_CalculateScreenPosition::
     add hl, hl
     add hl, hl
 
-    ; de = hl/wTilemap_Width = (wHero.X*20/wTilemap_Width)
+    ; de = hl/wTilemap_Width = (wActor_Hero.X*20/wTilemap_Width)
     Get16 bc, wTilemap_Width
     call Math_Div16
 
-    ; de = -de = -(wHero.X*20/wTilemap_Width)
+    ; de = -de = -(wActor_Hero.X*20/wTilemap_Width)
     TwosComp de
 
-    ; wHero.X - de = wHero.X - (wHero.X*20/wTilemap_Width)
+    ; wActor_Hero.X - de = wActor_Hero.X - (wActor_Hero.X*20/wTilemap_Width)
     pop hl
     add hl, de
 
@@ -50,7 +58,7 @@ Camera_CalculateScreenPosition::
 
 Camera_CalculateActorPosition::
     ; Calculate wScreen_X first via Camera_CalculateScreenPosition
-    ; wActor.X - wScreen_X - wHero.Y/16
+    ; wActor.X - wScreen_X - wActor_Hero.Y/16
     Crash
     ret
 
@@ -92,12 +100,20 @@ Camera_VBlank_CopyColumn::
 Camera_ColumnPrepare::
     ; Inputs:
     ;   wScreen_X
-    ;   de = Column (0-31)
+    ;   de = Column (-6 to 57)
 
-    ; Target = RENDER_TILEMAP/$9900 + Column offset
-    ld hl, RENDER_TILEMAP
+    ; Target = TILEMAP_GAME/$9900 + (Column offset % 32)
+    push de
+    ; de = de % 32 = de and %0000000000011111 = (Column offset % 32)
+    ld d, 0
+    ld a, e
+    and %00011111
+    ld e, a
+    ; Target = TILEMAP_GAME/$9900 + (Column offset % 32)
+    ld hl, TILEMAP_GAME
     add hl, de
     Set16 hVBlank_Dest, hl
+    pop de
 
     ; Source:
     ; ha = wScreen_X/8 -> Get the tile offset (instead of bit offset)
@@ -166,19 +182,36 @@ Camera_Setup::
     ; Update the screen position
     xor a
     ld [rSCY], a
-    Mov8 rSCX, wScreen_X
+    ld a, [wScreen_X]
+    ld [rSCX], a
 
-    ; Render all the columns
-    ld de, 32 ; Do 0-31sssssssssssssssssssssssssssssssssss
+    ; Get the first Column of the viewport
+    srl a
+    srl a
+    srl a
+    ; de = wScreen_X/8 which is the Column of the viewport
+    ld d, 0
+    ld e, a
+    ; Render from the left limit to the right limit
+    REPT CAMERA_LEFT_LIMIT
+        dec de
+    ENDR
+
+    ld bc, 32 ; Render a total of 32 columns
     .RenderLoop:
         push de
-        dec de
+        push bc
         call Camera_ColumnPrepare
         call Camera_VBlank_CopyColumn
+        pop bc
         pop de
-        Dec16Loop de, .RenderLoop
+        inc de
+        Dec16Loop bc, .RenderLoop
     
     Set8 wCamera_Status, CAMERA_STATUS_ON
+    xor a
+    ld [wCamera_PendingRenders_Left], a
+    ld [wCamera_PendingRenders_Right], a
     ret
 
 Camera_Do::

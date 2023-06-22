@@ -167,6 +167,14 @@ MACRO LdHLIBCI
     inc bc
 ENDM
 
+MACRO LdDEIBCI
+    ; ld [hl+], [bc+]
+    ld a, [bc]
+    ld [de], a
+    inc de
+    inc bc
+ENDM
+
 MACRO RestoreRegisters
     pop hl
     pop de

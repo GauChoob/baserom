@@ -6,7 +6,7 @@ INCLUDE "source/rom/header.asm"
 
 INCLUDE "source/system/_system.asm"
 
-INCLUDE "source/engine/actor/actor.asm"
+INCLUDE "source/engine/actor/_actor.asm"
 INCLUDE "source/engine/text/_text.asm"
 INCLUDE "source/engine/tilemap/_tilemap.asm"
 INCLUDE "source/engine/tileset/tileset.asm"

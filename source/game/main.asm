@@ -10,11 +10,16 @@ Boot::
 Reset::
     Stack_Init
     call System_Init
+    call Engine_Init
+    jp Game_Init
+
+Engine_Init::
+    XCall Actor_Init
     XCall Text_Init
     XCall Textbox_Init
     XCall Camera_Init
     XCall Script_Init
-    jp Game_Init
+    ret
 
 Game_Init::
     ld hl, wScript_Main

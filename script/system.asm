@@ -52,7 +52,45 @@ SCRIPT_Scene::
     Tileset TILESET_Numbers, $9000, 0
     GameTilemap TILEMAP_TestText
 
+    .Loop
+        CameraOn
+        LCDOn
+        Wait 3
+        LCDOff
+        RamAdd16 wScreen_X, 4
+        Jump .Loop
+
+    End
+
+
+SCRIPT_RamTest::
+    RamSet8 xAttrmap, $20
+    RamSet16 xAttrmap, $1234
+    RamAdd8 xAttrmap, $10
+    RamAdd16 xAttrmap, $2244
+
+    RamSet8 wOAM_Shadow, $20
+    RamSet16 wOAM_Shadow, $1234
+    RamAdd8 wOAM_Shadow, $10
+    RamAdd16 wOAM_Shadow, $2244
+
+    ; RamSet8 TestVal8, $20
+    ; RamSet16 TestVal16, $1234
+    ; RamAdd8 TestVal8, $10
+    ; RamAdd16 TestVal16, $2244
+
+    RamSet8 hScript_Current.End, $20
+    RamSet16 hScript_Current.End, $1234
+    RamAdd8 hScript_Current.End, $10
+    RamAdd16 hScript_Current.End, $2244
+
     CameraOn
     LCDOn
 
     End
+
+; SECTION "TEST WRAMX", WRAMX, BANK[4]
+; TestVal8:
+;     db
+; TestVal16:
+;     dw

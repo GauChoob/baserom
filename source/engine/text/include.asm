@@ -1,4 +1,4 @@
-TEXT_BANK EQU $10 ; Todo -arbitrary number
+TEXT_BANK EQU 1 ; Todo -arbitrary number
 
 
 TEXTBOX_TILEMAP EQU $9C00

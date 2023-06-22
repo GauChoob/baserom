@@ -55,7 +55,9 @@ MACRO SRAM_Off
 ENDM
 
 MACRO SwitchSRAMBank
-    ld a, \1
+    IF STRCMP("\1", "a") != 0
+        ld a, \1
+    ENDC
     ld [rRAMB], a
 ENDM
 
