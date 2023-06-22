@@ -12,7 +12,7 @@ Reset::
     call System_Init
     XCall Text_Init
     XCall Textbox_Init
-    XCall Tilemap_Render_Init
+    XCall Camera_Init
     XCall Script_Init
     jp Game_Init
 
@@ -29,5 +29,8 @@ Game_Loop::
     call Script_Do
     ; ld hl, wScript_Main
     ; call wScript_Secondary
+
+    XCall Camera_Do
+
     call VBlank_Await
     jr Game_Loop

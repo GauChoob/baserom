@@ -51,6 +51,8 @@ SCRIPT_Tileset::
 SCRIPT_Scene::
     Tileset TILESET_Numbers, $9000, 0
     GameTilemap TILEMAP_TestText
-    
+
+    CameraOn
     LCDOn
+
     End

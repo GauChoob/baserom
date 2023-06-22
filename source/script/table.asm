@@ -9,6 +9,8 @@ SECTION "ScriptTable", ROM0
 
 RSRESET
 Script_Table::
+    ; camera.asm
+    Script_AddCommand Cmd_CameraOn
     ; control.asm
     Script_AddCommand Cmd_Wait
     Script_AddCommand Cmd_End

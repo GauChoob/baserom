@@ -34,6 +34,8 @@ MACRO End
     db Enum_Cmd_End
 ENDM
 Cmd_End::
+    dec bc
+    Set16 hScript_Current.Address, bc
     ret
 
 MACRO Jump

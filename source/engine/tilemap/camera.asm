@@ -3,19 +3,24 @@ RENDER_TILEMAP EQU $9900
 SECTION "WRAM Tilemap Render", WRAM0
 wScreen_X::
     dw
-wRender_Buffer::
+wCamera_Buffer::
     ; Tilemap then attrmap
     ds TILEMAP_GAME_HEIGHT*2
+CAMERA_STATUS_OFF EQU 0
+CAMERA_STATUS_ON EQU 1
+wCamera_Status::
+    db
 
 
 SECTION "Tilemap Render", ROMX
 
-Tilemap_Render_Init::
+Camera_Init::
     xor a
     ld [wScreen_X], a
+    ld [wCamera_Status], a
     ret
 
-Tilemap_Render_CalculateScreenPosition::
+Camera_CalculateScreenPosition::
     ; wScreen_X = wHero.X - (wHero.X*20/wTilemap_Width)
 
     ; hl = wHero.X*20
@@ -43,8 +48,8 @@ Tilemap_Render_CalculateScreenPosition::
     Set16 wScreen_X, hl
     ret
 
-Tilemap_Render_CalculateActorPosition::
-    ; Calculate wScreen_X first via Tilemap_Render_CalculateScreenPosition
+Camera_CalculateActorPosition::
+    ; Calculate wScreen_X first via Camera_CalculateScreenPosition
     ; wActor.X - wScreen_X - wHero.Y/16
     Crash
     ret
@@ -52,10 +57,10 @@ Tilemap_Render_CalculateActorPosition::
     ;Offset from wScreen_X (-6 to -1 is left of the screen, 0-19 is visible screen, 20-25 is right of screen)
 
 
-Tilemap_Render_VBlank_CopyColumn::
-    ; Set up with Tilemap_Render_ColumnPrepare
+Camera_VBlank_CopyColumn::
+    ; Set up with Camera_ColumnPrepare
     Get16 hl, hVBlank_Dest
-    Get16 bc, wRender_Buffer
+    ld bc, wCamera_Buffer
     push hl
     ld de, $20
 
@@ -80,9 +85,11 @@ Tilemap_Render_VBlank_CopyColumn::
             add hl, de
         ENDC
     ENDR
+
+    Set16 hVBlank_Func, $0000
     ret
 
-Tilemap_Render_ColumnPrepare::
+Camera_ColumnPrepare::
     ; Inputs:
     ;   wScreen_X
     ;   de = Column (0-31)
@@ -95,7 +102,7 @@ Tilemap_Render_ColumnPrepare::
     ; Source:
     ; ha = wScreen_X/8 -> Get the tile offset (instead of bit offset)
     Get8 h, wScreen_X + 1
-    Get8 a, wScreen_X
+    ld a, [wScreen_X]
     srl h
     rra
     srl h
@@ -111,8 +118,12 @@ Tilemap_Render_ColumnPrepare::
     ; hl = Source = hl + de = (wScreen_X/8) % 32 + Column offset
     add hl, de
 
-    ld bc, wRender_Buffer
-    ld de, wTilemap_Width
+    ; hl = Source = hl + de = xTilemap + (wScreen_X/8) % 32 + Column offset
+    ld de, xTilemap
+    add hl, de
+
+    ld bc, wCamera_Buffer
+    Get16 de, wTilemap_Width
 
     push hl
 
@@ -130,7 +141,6 @@ Tilemap_Render_ColumnPrepare::
     pop hl
 
     SwitchSRAMBank BANK(xAttrmap)
-    SRAM_On
     FOR loop, 0, TILEMAP_GAME_HEIGHT
         ld a, [hl]
         ld [bc], a
@@ -142,12 +152,12 @@ Tilemap_Render_ColumnPrepare::
 
     SRAM_Off
 
-    Set8 hVBlank_Bank, BANK(Tilemap_Render_VBlank_CopyColumn)
-    Set16 hVBlank_Func, Tilemap_Render_VBlank_CopyColumn
+    Set8 hVBlank_Bank, BANK(Camera_VBlank_CopyColumn)
+    Set16 hVBlank_Func, Camera_VBlank_CopyColumn
     ret
 
 
-Tilemap_Render_Base::
+Camera_Setup::
     ; Renders the screen and 6 tiles extra to the left and right
     ; Inputs:
     ;   wScreen_X
@@ -159,10 +169,18 @@ Tilemap_Render_Base::
     Mov8 rSCX, wScreen_X
 
     ; Render all the columns
-    ld de, 31
+    ld de, 32 ; Do 0-31sssssssssssssssssssssssssssssssssss
     .RenderLoop:
-        call Tilemap_Render_ColumnPrepare
-        call Tilemap_Render_VBlank_CopyColumn
+        push de
+        dec de
+        call Camera_ColumnPrepare
+        call Camera_VBlank_CopyColumn
+        pop de
         Dec16Loop de, .RenderLoop
     
+    Set8 wCamera_Status, CAMERA_STATUS_ON
+    ret
+
+Camera_Do::
+    ; Handles the rendering
     ret
