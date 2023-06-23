@@ -1,5 +1,6 @@
 SECTION "Hero", ROMX, BANK[ACTOR_BANK]
 
+Actor_Hero_RenderTable::
 
 
 Actor_Hero_Main::
@@ -41,7 +42,7 @@ Actor_Hero_Main::
         call Actor_MoveUp
         jr .Pass2
     .Down:
-        call Actor_MoveUp
+        call Actor_MoveDown
         ;jr .Pass2
     .Pass2:
 

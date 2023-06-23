@@ -43,9 +43,14 @@ MACRO Actor_SetAnim
 
     ; Store the new script location
     ld c, ACTOR_RenderScript
-    Set8 bc, l
+    ld a, [hl+]
+    ld [bc], a
     inc c
-    Set8 bc, h
+    ld a, [hl+]
+    ld [bc], a
+    inc c
+    ld a, [hl+]
+    ld [bc], a
 
     .End\@
 ENDM
@@ -69,7 +74,7 @@ MACRO Actor_FaceLeft
 ENDM
 
 RSSET 0
-DEF ACTOR_X RB 1
+DEF ACTOR_X RB 2
 DEF ACTOR_Y RB 1
 DEF ACTOR_Z RB 1
 DEF ACTOR_Speed RB 1

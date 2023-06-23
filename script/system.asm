@@ -51,14 +51,10 @@ SCRIPT_Tileset::
 SCRIPT_Scene::
     Tileset TILESET_Numbers, $9000, 0
     GameTilemap TILEMAP_TestText
+    ActorEnable 0, 800, 0, 0, Actor_Hero_Main, Actor_Hero_RenderTable
 
-    .Loop
-        CameraOn
-        LCDOn
-        Wait 3
-        LCDOff
-        RamAdd16 wScreen_X, 4
-        Jump .Loop
+    CameraOn
+    LCDOn
 
     End
 

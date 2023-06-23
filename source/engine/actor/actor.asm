@@ -30,7 +30,7 @@ Actor_NewActor::
     ; Inputs:
     ;   b = Actor_Current
     ;   e = Actor slot (0 = Hero, 1-4)
-    ; Destroys: abcde
+    ; Destroys: all
     ld c, ACTOR_Z
     Set8 bc, 0
     ld c, ACTOR_Speed
@@ -39,10 +39,6 @@ Actor_NewActor::
     xor a
     ld [bc], a
     ld c, ACTOR_Shielding
-    ld [bc], a
-    ld c, ACTOR_Handler
-    ld [bc], a
-    inc c
     ld [bc], a
 
     ld c, ACTOR_RenderAnimID

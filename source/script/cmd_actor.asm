@@ -3,6 +3,11 @@ SECTION "CmdActor", ROM0
 MACRO ActorEnable
     db Enum_Cmd_ActorEnable
     db \1
+    dw \2
+    db \3
+    db \4
+    dw \5
+    dw \6
 ENDM
 Cmd_ActorEnable::
     ; Arguments:
@@ -13,12 +18,12 @@ Cmd_ActorEnable::
     ;   dw ACTOR_Handler
     ;   dw ACTOR_RenderTable
     Script_ReadByte e
-    PushROMBank
     push bc
-    SwitchROMBank ACTOR_BANK
 
+    PushROMBank
+    SwitchROMBank ACTOR_BANK
     call Actor_Select
-    call Actor_NewActor
+    PopROMBank
 
     pop hl
     ld a, [hl+]
@@ -50,7 +55,12 @@ Cmd_ActorEnable::
     ld a, [hl+]
     ld [bc], a
 
+    push hl
+    PushROMBank
+    SwitchROMBank ACTOR_BANK
+    call Actor_NewActor
     PopROMBank
+    pop bc
     jp Script_Read
 
 

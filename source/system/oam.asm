@@ -13,10 +13,11 @@ wOAM_PreviousCursor:
 
 SECTION "OAMX", ROMX
 OAM_Init::
-    call OAM_ResetShadow
+    call OAM_InitShadow
     ret
 
-OAM_ResetShadow::
+OAM_InitShadow::
+    ; Disable all the objects in the previous frame
     Set8 wOAM_Cursor, LOW(wOAM_Shadow)
     Set8 wOAM_PreviousCursor, LOW(wOAM_Shadow)
 

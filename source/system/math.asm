@@ -39,8 +39,9 @@ Math_Div16::
     ld de, 0
     .Loop:
         add hl, bc
-        jr c, .Done
+        jr nc, .Done
         inc de
+        jr .Loop
     .Done:
     pop bc
     add hl, bc
