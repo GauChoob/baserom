@@ -16,6 +16,13 @@ SECTION "System", ROM0
 
 System_Init::
     ; Run Stack_Init before calling any function including this one
+
+    xor a
+    ld [rRP], a     ; Disable infrared port
+    ld [rRAMG], a   ; Disable RAM
+    ld [rROMB1], a  ; High bit of Bank is always 0
+    ld [rNR52], a   ; Sound off
+
     Call Banks_Init
     XCall Speed_Double
 

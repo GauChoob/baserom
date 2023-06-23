@@ -1,4 +1,3 @@
-TILEMAP_GAME EQU $9900
 CAMERA_LEFT_LIMIT EQU 4
 CAMERA_RIGHT_LIMIT EQU 8
 ASSERT CAMERA_LEFT_LIMIT + 20 + CAMERA_RIGHT_LIMIT == 32
@@ -61,8 +60,16 @@ Camera_CalculateScreenPosition::
     pop hl
     add hl, de
 
+    ; Store the screen position
     Set16 wScreen_X, hl
+
+    ; The sky position is half of the screen position
+    sra h
+    rr l
     Set8 rSCX, l
+    ; Setup HBlank to fix rSCX when we get to the game
+    Set8 rLYC, TILEMAP_SKY_HEIGHT*8
+    Set16 hHBlank_Func, HBlank_GameSCX
     ret
 
 Camera_RequestNewRenders::
@@ -350,13 +357,8 @@ Camera_Setup::
     ; Calculate the screen position based on the hero pos
     call Camera_CalculateScreenPosition
 
-    ; Update the screen position
-    xor a
-    ld [rSCY], a
-    ld a, [wScreen_X]
-    ld [rSCX], a
-
     ; Get the first Column of the viewport
+    ld a, [wScreen_X]
     srl a
     srl a
     srl a

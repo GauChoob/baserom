@@ -26,8 +26,8 @@ SECTION "Textbox", ROM0
 
 Textbox_VBlank_LoadTilemap::
     ; VBlank #1/4 - Takes up around 80% of VBlank!
-    ld d, BANK(STATICTILE_TestText)
-    ld bc, STATICTILE_TestText
+    ld d, BANK(STATICTILE_Textbox)
+    ld bc, STATICTILE_Textbox
     ld hl, TEXTBOX_TILEMAP
     call Tilemap_Static_UnpackTileAttr
     Set8 hVBlank_VBK, 1
@@ -98,12 +98,12 @@ Textbox_Data_Closing:
     db 131
     db 135
     db 140
-    db 145
+    db 144
     .End:
 
 Textbox_Data_Opening:
     ; WY position
-    db 145
+    db 144
     db 140
     db 135
     db 131

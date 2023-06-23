@@ -17,6 +17,10 @@ LCD_Init::
     ; Hide the window by default
     Set8 rWX, 7
     Set8 rWY, 144
+    ; Default SCX, SCY
+    xor a
+    ld [rSCY], a
+    ld [rSCX], a
     call LCD_Off
     ret
 

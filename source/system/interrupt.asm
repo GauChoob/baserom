@@ -38,6 +38,10 @@ hVBlank_VBK::
 hVBlank_TileCount::
     db
 
+
+hHBlank_Func::
+    dw
+
 SECTION "InterruptX", ROMX
 Interrupt_Init::
     di
@@ -46,6 +50,8 @@ Interrupt_Init::
     ld [hVBlank_Requests], a
     ld [rIF], a
     ld [rIE], a
+    Set8 rSTAT, STATF_LYC
+    Set8 rLYC, -1
 
     Set16 hVBlank_Func, $0000
     ret
@@ -68,7 +74,7 @@ Interrupt_SetTimer::
 Interrupt_SetVBlank::
     xor a
     ld [rIF], a
-    Set8 rIE, IEF_VBLANK
+    Set8 rIE, IEF_VBLANK | IEF_STAT
     ei
     ret
 
@@ -79,8 +85,7 @@ Interrupt_VBlank::
 
 SECTION "Interrupt_HBlank", ROM0[$0048]
 Interrupt_HBlank::
-    Crash
-    reti
+    jp HBlank_Interrupt
 
 SECTION "Interrupt_Timer", ROM0[$0050]
 Interrupt_Timer::
@@ -98,6 +103,44 @@ Interrupt_Joypad::
 
 SECTION "Interrupt", ROM0[$3000] ; TODO remove this hardcoded - easier for debugging as the breakpoint doesn't move
 
+HBlank_Interrupt::
+    push af
+    push hl
+    Get16 hl, hHBlank_Func
+    jp hl
+
+HBlank_GameSCX::
+    ; Set the camera to the game position
+    Mov8 rSCX, wScreen_X
+
+    ; If there is a window, run HBlank_Textbox
+    ld a, [rWY]
+    cp 144
+    jr z, .End
+    .SetupTextbox
+        ld [rLYC], a
+        Set16 hHBlank_Func, HBlank_TextboxDisableSprite
+        pop hl
+        pop af
+        reti
+    .End:
+        Set8 rLYC, -1
+        pop hl
+        pop af
+        reti
+
+
+HBlank_TextboxDisableSprite::
+    ; Disables sprites from appearing above the textbox
+    ld a, LCDCF_ON | LCDCF_WIN9C00 | LCDCF_WINON | LCDCF_BG8800 | LCDCF_BG9800 | LCDCF_OBJ8 | LCDCF_OBJOFF | LCDCF_BGON
+    ld [rLCDC], a
+    ld [wLCD_LCDC], a
+    ; Disable HBlank
+    Set8 rLYC, -1
+    pop hl
+    pop af
+    reti
+
 VBlank_Await::
     ; Wait until the VBlank handler has run
     ; If the screen is off, this function will run the graphics functions from the VBlank handler and immediately continue
@@ -109,9 +152,8 @@ VBlank_Await::
         or VBLANK_AWAIT_MASK
         ld [hVBlank_Requests], a
 
-        halt
-        nop
         .Wait:
+            halt
             ld a, [hVBlank_Requests]
             or a
             jr nz, .Wait

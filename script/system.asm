@@ -18,7 +18,6 @@ SCRIPT_Pal1::
     End
 
 SCRIPT_Text::
-    ;StaticTilemap STATICTILE_TestText, $9800
     LCDOn
     TextboxPortrait PORTRAIT_Girl
     TextboxOpen
@@ -51,6 +50,7 @@ SCRIPT_Tileset::
 SCRIPT_Scene::
     Tileset TILESET_Numbers, $9000, 0
     GameTilemap TILEMAP_TestText
+    StaticTilemap STATICTILE_TestSky, $9800
     ActorEnable 0, 800, 0, 0, Actor_Hero_Main, Actor_Hero_RenderTable
 
     CameraOn
