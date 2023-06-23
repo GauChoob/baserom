@@ -1,7 +1,10 @@
 SECTION "Hero", ROMX, BANK[ACTOR_BANK]
+
+
+
 Actor_Hero_Main::
     ; Inputs:
-    ;   b = wActor_Current
+    ;   b = Actor_Current
     ; First, handle the idle case
     ld a, [wJoypad_Held]
     and %11110000

@@ -10,8 +10,10 @@ DEF ANIM_WALK_LEFT RB 3
 DEF ANIM_WALK_RIGHT RB 3
 
 MACRO Actor_SetAnim
+    ; Arguments:
+    ;   \1 = e.g. ANIM_IDLE
     ; Inputs:
-    ;   b = wActor_Current
+    ;   b = Actor_Current
 
     ; [.RenderScript] = [.RenderTable] + AnimID + 3*Rightfacing
     ; Destroys all
@@ -50,7 +52,7 @@ ENDM
 
 MACRO Actor_FaceRight
     ; Inputs:
-    ;   b = wActor_Current
+    ;   b = Actor_Current
     ; Destroys ac
     ld c, ACTOR_FacesRight
     ld a, 3
@@ -59,7 +61,7 @@ ENDM
 
 MACRO Actor_FaceLeft
     ; Inputs:
-    ;   b = wActor_Current
+    ;   b = Actor_Current
     ; Destroys ac
     ld c, ACTOR_FacesRight
     xor a
@@ -111,10 +113,6 @@ MACRO Actor_Struct
     db
 ENDM
 
-SECTION "WRAM Actor", WRAM0
-wActor_Current::
-    ; Upper byte of the pointer to the Actor_Struct
-    db
 
 SECTION "WRAM Actor Hero", WRAM0, ALIGN[8]
 wActor_Hero::

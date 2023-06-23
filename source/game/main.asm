@@ -35,6 +35,7 @@ Game_Loop::
     ; ld hl, wScript_Main
     ; call wScript_Secondary
 
+    XCall Actor_Do
     XCall Camera_Do
 
     call VBlank_Await

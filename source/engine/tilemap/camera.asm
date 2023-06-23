@@ -59,6 +59,7 @@ Camera_CalculateScreenPosition::
 Camera_CalculateActorPosition::
     ; Calculate wScreen_X first via Camera_CalculateScreenPosition
     ; wActor.X - wScreen_X - wActor_Hero.Y/16
+    ; 64 + wActor_Hero.Y/4
     Crash
     ret
 

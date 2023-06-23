@@ -2,24 +2,98 @@ SECTION "Actor", ROMX, BANK[ACTOR_BANK]
 
 Actor_Init::
     ld b, HIGH(wActor_Hero)
+    call Actor_Disable
+    ld b, HIGH(wActor_1)
+    call Actor_Disable
+    ld b, HIGH(wActor_2)
+    call Actor_Disable
+    ld b, HIGH(wActor_3)
+    call Actor_Disable
+    ld b, HIGH(wActor_4)
+    call Actor_Disable
+    ret
+
+Actor_Disable::
+    ; Inputs:
+    ;   b = Actor_Current
     ld c, ACTOR_Handler + 1
     xor a
     ld [bc], a
+    ret
 
-    ld b, HIGH(wActor_1)
+Actor_NewActor::
+    ; Initialize actor variables
+    ; Still need to manually define:
+    ;   ACTOR_X, ACTOR_Y, ACTOR_Z
+    ;   ACTOR_Handler
+    ;   ACTOR_RenderTable
+    ; Inputs:
+    ;   b = Actor_Current
+    ;   e = Actor slot (0 = Hero, 1-4)
+    ; Destroys: abcde
+    ld c, ACTOR_Z
+    Set8 bc, 0
+    ld c, ACTOR_Speed
+    Set8 bc, 1
+    ld c, ACTOR_FacesRight
+    xor a
     ld [bc], a
-    ld b, HIGH(wActor_2)
+    ld c, ACTOR_Shielding
     ld [bc], a
-    ld b, HIGH(wActor_3)
+    ld c, ACTOR_Handler
     ld [bc], a
-    ld b, HIGH(wActor_4)
+    inc c
     ld [bc], a
+
+    ld c, ACTOR_RenderAnimID
+    dec a
+    ld [bc], a
+
+    ; ACTOR_RenderTileID -> 0 for Hero and Actor 1, then $20, $40, $60 for Actors 2, 3, 4
+    ld a, e
+    ld d, 0
+    JumpSmaller 2, .ZeroId
+    .NonZeroId:
+        ; (d - 1)*$20
+        dec e
+        xor a
+        .Loop:
+            add $20
+            dec e
+            jr nz, .Loop
+        ld d, a
+    .ZeroId: ; 0
+    ld a, d
+    ld c, ACTOR_RenderTileID
+    ld [bc], a
+
+    Actor_SetAnim ANIM_IDLE
+
+    ret
+
+Actor_Select_Table:
+    db HIGH(wActor_Hero)
+    db HIGH(wActor_1)
+    db HIGH(wActor_2)
+    db HIGH(wActor_3)
+    db HIGH(wActor_4)
+
+Actor_Select::
+    ; Inputs:
+    ;   e = Actor slot (0 = Hero, 1-4)
+    ; Output:
+    ;   b = Actor_Current
+    ; Destroys: all
+    ld hl, Actor_Select_Table
+    ld d, $00
+    add hl, de
+    ld b, [hl]
     ret
 
 
 Actor_MoveLeft::
     ; Inputs:
-    ;   b = wActor_Current
+    ;   b = Actor_Current
     ; Destroys all except b
 
     ; de = -speed
@@ -48,7 +122,7 @@ Actor_MoveLeft::
 
 Actor_MoveRight::
     ; Inputs:
-    ;   b = wActor_Current
+    ;   b = Actor_Current
     ; Destroys all except b
 
     ; de = speed
@@ -75,7 +149,7 @@ Actor_MoveRight::
 
 Actor_MoveDown::
     ; Inputs:
-    ;   b = wActor_Current
+    ;   b = Actor_Current
     ; Destroys cl
 
     ; l = speed
@@ -97,7 +171,7 @@ Actor_MoveDown::
 
 Actor_MoveUp::
     ; Inputs:
-    ;   b = wActor_Current
+    ;   b = Actor_Current
     ; Destroys cl
 
     ; l = speed

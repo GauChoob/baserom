@@ -9,6 +9,10 @@ SECTION "ScriptTable", ROM0
 
 RSRESET
 Script_Table::
+    ; cmd_actor.asm
+    Script_AddCommand Cmd_ActorDisable
+    Script_AddCommand Cmd_ActorDisableAll
+    Script_AddCommand Cmd_ActorEnable
     ; cmd_camera.asm
     Script_AddCommand Cmd_CameraOn
     ; cmd_control.asm
